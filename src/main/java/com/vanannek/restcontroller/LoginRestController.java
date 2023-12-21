@@ -1,6 +1,7 @@
 package com.vanannek.restcontroller;
 
 import com.vanannek.exception.UserNotFoundException;
+import com.vanannek.record.LoginRequest;
 import com.vanannek.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -20,19 +21,20 @@ public class LoginRestController {
     @Autowired private UserService userService;
 
     @PostMapping("/login-process")
-    public ResponseEntity<Void> processLogin(@RequestParam String username,
-                                             @RequestParam String plainPass,
+    public ResponseEntity<Void> processLogin(@RequestBody LoginRequest loginRequest,
                                              HttpSession session) {
         log.info("Process login, http session Id: " + session.getId());
         try {
-            if (userService.login(username, plainPass)) {
-                session.setAttribute("username", username);
+            if (userService.login(loginRequest.curUsername(), loginRequest.plainPass())) {
+                session.setAttribute("username", loginRequest.plainPass());
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
         } catch (UserNotFoundException e) {
             log.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -40,11 +42,12 @@ public class LoginRestController {
     @PostMapping("/logout")
     public ResponseEntity<Void> processLogout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
+        log.info("Process logout, http session Id: " + session.getId());
         try {
             if (session != null) {
                 session.invalidate();
             }
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class ChatRestController {
+public class WebsocketController {
 
-    private static final Logger log = LogManager.getLogger(ChatRestController.class);
+    private static final Logger log = LogManager.getLogger(WebsocketController.class);
 
     @Autowired private CustomMessageHandler messageHandler;
 

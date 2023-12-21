@@ -6,10 +6,14 @@ import com.vanannek.dto.ConversationMemberDTO;
 import com.vanannek.entity.ChatMessage;
 import com.vanannek.entity.Conversation;
 import com.vanannek.entity.ConversationMember;
+import com.vanannek.exception.ConversationNotFoundException;
 import com.vanannek.record.AddGroupRequest;
+import com.vanannek.record.DeleteMemberRequest;
 import com.vanannek.service.conversation.ConversationService;
 import com.vanannek.service.conversationmember.ConversationMemberService;
 import com.vanannek.util.ConversationUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +26,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/conversations")
 public class ConversationRestController {
+
+    private static final Logger log = LogManager.getLogger(ConversationRestController.class);
 
     @Autowired private ConversationService conversationService;
     @Autowired private ConversationMemberService memberService;
@@ -46,6 +52,17 @@ public class ConversationRestController {
         conversationDTO.setName(recipientUsername);
     }
 
+    @DeleteMapping("/delete-conversation")
+    private ResponseEntity<String> deleteConversation(@RequestParam String conversationId) {
+        try {
+            conversationService.deleteById(conversationId);
+            return new ResponseEntity<>("Conversation deleted successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @PostMapping("/add-new-member")
     public ResponseEntity<String> addNewMember(@RequestBody ConversationMemberDTO memberDTO) {
         try {
@@ -57,9 +74,9 @@ public class ConversationRestController {
     }
 
     @DeleteMapping("/delete-member")
-    public ResponseEntity<String> deleteMember(@RequestBody ConversationMemberDTO memberDTO) {
+    public ResponseEntity<String> deleteMember(@RequestBody DeleteMemberRequest deleteMemberRequest) {
         try {
-            memberService.deleteByUsername(memberDTO.getConversationId(), memberDTO.getMemberUsername());
+            memberService.deleteByUsername(deleteMemberRequest.conversationId(), deleteMemberRequest.memberUsername());
             return new ResponseEntity<>("Member deleted successfully", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -67,7 +84,7 @@ public class ConversationRestController {
     }
 
     @PostMapping("/add-private-conversation")
-    public ResponseEntity<Void> addPrivateConversation(
+    public ResponseEntity<String> addPrivateConversation(
             @RequestParam("curUsername") String curUsername,
             @RequestParam("targetUsername") String targetUsername) {
 
@@ -96,11 +113,11 @@ public class ConversationRestController {
         conversationDTO.addMessageDTO(chatMessageDTO);
 
         conversationService.saveConversationWithMessagesAndMembers(conversationDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("A private conversation added successfully", HttpStatus.CREATED);
     }
 
     @PostMapping("/add-group")
-    public ResponseEntity<Void> addGroup(@RequestBody AddGroupRequest addGroupRequest) {
+    public ResponseEntity<String> addGroup(@RequestBody AddGroupRequest addGroupRequest) {
         String curUsername = addGroupRequest.curUsername();
 
         ConversationDTO conversationDTO = ConversationDTO.builder()
@@ -132,6 +149,6 @@ public class ConversationRestController {
 
         conversationService.saveConversationWithMessagesAndMembers(conversationDTO);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("A group added successfully", HttpStatus.CREATED);
     }
 }
