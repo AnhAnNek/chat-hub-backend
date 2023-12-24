@@ -54,9 +54,10 @@ public class WebSocketEventListener {
     }
 
     private void removeSessionAttributes(Map<String, Object> sessionAttributes, String... attributes) {
+        log.info("Before user disconnect: {}", sessionAttributes);
         for (String attribute : attributes) {
             sessionAttributes.remove(attribute);
         }
-        log.info("Session Attributes: {}", sessionAttributes);
+        log.info("After user disconnect: {}", sessionAttributes);
     }
 }

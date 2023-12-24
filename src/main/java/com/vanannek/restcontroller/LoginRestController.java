@@ -25,8 +25,8 @@ public class LoginRestController {
                                              HttpSession session) {
         log.info("Process login, http session Id: " + session.getId());
         try {
-            if (userService.login(loginRequest.curUsername(), loginRequest.plainPass())) {
-                session.setAttribute("username", loginRequest.plainPass());
+            if (userService.login(loginRequest.username(), loginRequest.plainPass())) {
+                session.setAttribute("username", loginRequest.username());
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

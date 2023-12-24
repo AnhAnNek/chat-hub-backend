@@ -1,4 +1,4 @@
-package com.vanannek.restcontroller;
+package com.vanannek.websocket;
 
 import com.vanannek.dto.ChatMessageDTO;
 import com.vanannek.handler.CustomMessageHandler;
@@ -10,12 +10,12 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
 
 import java.util.List;
 import java.util.Map;
 
-@RestController
+@Controller
 public class WebsocketController {
 
     private static final Logger log = LogManager.getLogger(WebsocketController.class);
@@ -46,8 +46,6 @@ public class WebsocketController {
         sessionAttributes.put("senderUsername", senderUsername);
         sessionAttributes.put("conversationId", chatMessageDTO.getConversationId());
         log.info("After put new user: `{}`", sessionAttributes);
-
-        messageHandler.saveAndSendMessage(chatMessageDTO);
 
         onlineUserStore.add(senderUsername, headerAccessor.getSessionId());
         List<String> onlineUsers = onlineUserStore.getOnlineUsers();

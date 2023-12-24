@@ -1,6 +1,6 @@
 package com.vanannek.record;
 
 public record LoginRequest(
-        String curUsername,
+        String username,
         String plainPass
 ) { }
