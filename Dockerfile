@@ -19,6 +19,6 @@ WORKDIR /chat-hub-backend
 COPY --from=build /chat-hub-backend/target/chat-hub-backend.jar .
 
 # Expose the port on which the application will run
-EXPOSE 8080
+EXPOSE 8000
 
 ENTRYPOINT ["java", "-jar", "chat-hub-backend.jar"]

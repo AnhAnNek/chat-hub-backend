@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class OnlineUserStore {
-    private static OnlineUserStore ins;
+    private static volatile OnlineUserStore ins;
     private final Map<String, Set<String>> activeSessions;
 
     public synchronized static OnlineUserStore getIns() {

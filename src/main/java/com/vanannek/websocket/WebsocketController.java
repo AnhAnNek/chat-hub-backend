@@ -24,30 +24,29 @@ public class WebsocketController {
 
     @MessageMapping("/chat.sendMessage")
     private void sendMessage(@Payload ChatMessageDTO chatMessageDTO) {
-        String content = "`{}` send msg to conversation `{}`, content: {}";
-        log.info(content, chatMessageDTO.getSenderUsername(),
-                chatMessageDTO.getConversationId(), chatMessageDTO);
+        log.info("`{}` send msg to conversation `{}`, content: `{}`",
+                chatMessageDTO.getSenderUsername(), chatMessageDTO.getConversationId(), chatMessageDTO);
         messageHandler.saveAndSendMessage(chatMessageDTO);
     }
 
     @MessageMapping("/chat.addUser/{senderUsername}")
-    public void addUserByConversation(@Payload ChatMessageDTO chatMessageDTO,
-                                      @DestinationVariable String senderUsername,
+    public void addUserByConversation(@DestinationVariable String senderUsername,
                                       SimpMessageHeaderAccessor headerAccessor) {
         OnlineUserStore onlineUserStore = OnlineUserStore.getIns();
-        log.info("Add new user, session Id: `{}`", headerAccessor.getSessionId());
+
+        String sessionId = headerAccessor.getSessionId();
+        log.info("User Connected: `{}`, sessionsId: `{}`", senderUsername, sessionId);
 
         if (senderUsername == null) {
             return;
         }
 
         Map<String, Object> sessionAttributes = headerAccessor.getSessionAttributes();
-        log.info("Before put new user: `{}`", sessionAttributes);
+        log.info("Before user connect: `{}`", sessionAttributes);
         sessionAttributes.put("senderUsername", senderUsername);
-        sessionAttributes.put("conversationId", chatMessageDTO.getConversationId());
-        log.info("After put new user: `{}`", sessionAttributes);
+        log.info("After user connect: `{}`", sessionAttributes);
 
-        onlineUserStore.add(senderUsername, headerAccessor.getSessionId());
+        onlineUserStore.add(senderUsername, sessionId);
         List<String> onlineUsers = onlineUserStore.getOnlineUsers();
         messageHandler.sendOnlineUsers(onlineUsers);
     }

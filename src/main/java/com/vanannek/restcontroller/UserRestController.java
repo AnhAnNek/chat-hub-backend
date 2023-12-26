@@ -2,6 +2,7 @@ package com.vanannek.restcontroller;
 
 import com.vanannek.dto.UserDTO;
 import com.vanannek.service.user.UserService;
+import com.vanannek.store.OnlineUserStore;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,5 +37,10 @@ public class UserRestController {
     public ResponseEntity<List<UserDTO>> showUnchattedUsers(@RequestParam("curUsername") String curUsername) {
         List<UserDTO> userDTOs = userService.getUnchattedUsers(curUsername);
         return new ResponseEntity<>(userDTOs, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-online-users")
+    public List<String> getOnlineUsers() {
+        return OnlineUserStore.getIns().getOnlineUsers();
     }
 }

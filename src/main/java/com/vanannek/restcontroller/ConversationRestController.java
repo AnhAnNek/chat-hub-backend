@@ -35,21 +35,11 @@ public class ConversationRestController {
     @GetMapping("/get-conversations")
     public ResponseEntity<List<ConversationDTO>> getConversationsByUsername(@RequestParam("username") String username) {
         List<ConversationDTO> conversations = conversationService.getConversationsByUsername(username);
-        conversations.forEach(c -> setNameForPrivateConversations(username, c));
         conversations.sort((obj1, obj2) -> obj2.getLastMessageDTO().getSendingTime().compareTo(obj1.getLastMessageDTO().getSendingTime()));
         if (conversations.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(conversations, HttpStatus.OK);
-    }
-
-    private void setNameForPrivateConversations(String curUsername, ConversationDTO conversationDTO) {
-        if (conversationDTO == null) {
-            return;
-        }
-        String name = conversationDTO.getName();
-        String recipientUsername = ConversationUtils.getRemainderUser(name, curUsername);
-        conversationDTO.setName(recipientUsername);
     }
 
     @DeleteMapping("/delete-conversation")

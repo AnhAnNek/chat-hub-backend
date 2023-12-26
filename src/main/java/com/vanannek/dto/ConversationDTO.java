@@ -25,6 +25,7 @@ public class ConversationDTO {
     private Conversation.EType type;
     private String name;
     private ChatMessageDTO lastMessageDTO;
+    private int unreadMessages = 0;
 
     @JsonIgnore
     private List<ChatMessageDTO> chatMessageDTOs = new ArrayList<>();
