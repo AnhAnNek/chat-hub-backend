@@ -1,4 +1,4 @@
-package com.vanannek.restcontroller;
+package com.vanannek.websocket;
 
 import com.vanannek.dto.ChatMessageDTO;
 import com.vanannek.handler.CustomMessageHandler;
@@ -10,46 +10,43 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
 
 import java.util.List;
 import java.util.Map;
 
-@RestController
-public class ChatRestController {
+@Controller
+public class WebsocketController {
 
-    private static final Logger log = LogManager.getLogger(ChatRestController.class);
+    private static final Logger log = LogManager.getLogger(WebsocketController.class);
 
     @Autowired private CustomMessageHandler messageHandler;
 
     @MessageMapping("/chat.sendMessage")
     private void sendMessage(@Payload ChatMessageDTO chatMessageDTO) {
-        String content = "`{}` send msg to conversation `{}`, content: {}";
-        log.info(content, chatMessageDTO.getSenderUsername(),
-                chatMessageDTO.getConversationId(), chatMessageDTO);
+        log.info("`{}` send msg to conversation `{}`, content: `{}`",
+                chatMessageDTO.getSenderUsername(), chatMessageDTO.getConversationId(), chatMessageDTO);
         messageHandler.saveAndSendMessage(chatMessageDTO);
     }
 
     @MessageMapping("/chat.addUser/{senderUsername}")
-    public void addUserByConversation(@Payload ChatMessageDTO chatMessageDTO,
-                                      @DestinationVariable String senderUsername,
+    public void addUserByConversation(@DestinationVariable String senderUsername,
                                       SimpMessageHeaderAccessor headerAccessor) {
         OnlineUserStore onlineUserStore = OnlineUserStore.getIns();
-        log.info("Add new user, session Id: `{}`", headerAccessor.getSessionId());
+
+        String sessionId = headerAccessor.getSessionId();
+        log.info("User Connected: `{}`, sessionsId: `{}`", senderUsername, sessionId);
 
         if (senderUsername == null) {
             return;
         }
 
         Map<String, Object> sessionAttributes = headerAccessor.getSessionAttributes();
-        log.info("Before put new user: `{}`", sessionAttributes);
+        log.info("Before user connect: `{}`", sessionAttributes);
         sessionAttributes.put("senderUsername", senderUsername);
-        sessionAttributes.put("conversationId", chatMessageDTO.getConversationId());
-        log.info("After put new user: `{}`", sessionAttributes);
+        log.info("After user connect: `{}`", sessionAttributes);
 
-        messageHandler.saveAndSendMessage(chatMessageDTO);
-
-        onlineUserStore.add(senderUsername, headerAccessor.getSessionId());
+        onlineUserStore.add(senderUsername, sessionId);
         List<String> onlineUsers = onlineUserStore.getOnlineUsers();
         messageHandler.sendOnlineUsers(onlineUsers);
     }

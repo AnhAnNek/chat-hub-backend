@@ -1,7 +1,5 @@
 package com.vanannek.listener;
 
-import com.vanannek.dto.ChatMessageDTO;
-import com.vanannek.entity.ChatMessage;
 import com.vanannek.handler.CustomMessageHandler;
 import com.vanannek.store.OnlineUserStore;
 import org.apache.logging.log4j.LogManager;
@@ -13,8 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +23,8 @@ public class WebSocketEventListener {
 
     @EventListener
     public void handleWebsocketConnectListener(SessionConnectedEvent event) {
-        log.info("Received a new web socket connection");
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        log.info("Received a new web socket connection, sessionId: `{}`", headerAccessor.getSessionId());
     }
 
     @EventListener
@@ -37,26 +34,25 @@ public class WebSocketEventListener {
         Map<String, Object> sessionAttributes = headerAccessor.getSessionAttributes();
 
         String senderUsername = (String) sessionAttributes.get("senderUsername");
-        String conversationId = (String) sessionAttributes.get("conversationId");
 
-        if (senderUsername == null || conversationId == null) {
+        if (senderUsername == null) {
             return;
         }
 
-        log.info("User Disconnected: " + senderUsername);
-        log.info("headerAccessor.SessionId = " + headerAccessor.getSessionId());
-
+        String sessionId = headerAccessor.getSessionId();
+        log.info("User Disconnected: `{}`, sessionId: `{}`", senderUsername, sessionId);
         removeSessionAttributes(sessionAttributes, "senderUsername", "conversationId");
 
-        onlineUserStore.remove(senderUsername, headerAccessor.getSessionId());
+        onlineUserStore.remove(senderUsername, sessionId);
         List<String> onlineUsers = onlineUserStore.getOnlineUsers();
         messageHandler.sendOnlineUsers(onlineUsers);
     }
 
     private void removeSessionAttributes(Map<String, Object> sessionAttributes, String... attributes) {
+        log.info("Before user disconnect: `{}`", sessionAttributes);
         for (String attribute : attributes) {
             sessionAttributes.remove(attribute);
         }
-        log.info("Session Attributes: {}", sessionAttributes);
+        log.info("After user disconnect: `{}`", sessionAttributes);
     }
 }

@@ -1,11 +1,7 @@
 package com.vanannek.service.conversation;
 
-import com.vanannek.dto.ChatMessageDTO;
 import com.vanannek.dto.ConversationDTO;
-import com.vanannek.dto.ConversationMemberDTO;
-import com.vanannek.entity.ChatMessage;
 import com.vanannek.entity.Conversation;
-import com.vanannek.entity.ConversationMember;
 import com.vanannek.entity.User;
 import com.vanannek.exception.ConversationNotFoundException;
 import com.vanannek.mapper.ConversationMapper;
@@ -15,12 +11,11 @@ import com.vanannek.repos.ChatMessageRepos;
 import com.vanannek.repos.ConversationMemberRepos;
 import com.vanannek.repos.ConversationRepos;
 import com.vanannek.repos.UserRepos;
+import com.vanannek.util.ConversationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class ConversationServiceImpl implements ConversationService {
@@ -95,6 +90,16 @@ public class ConversationServiceImpl implements ConversationService {
     public List<ConversationDTO> getConversationsByUsername(String username) {
         List<String> conversationIds = memberRepos.getConversationIdsByUsername(username);
         List<Conversation> conversations = conversationRepos.findAllById(conversationIds);
+        conversations.forEach(c -> setNameForPrivateConversation(username, c));
         return conversationMapper.toDTOs(conversations);
+    }
+
+    private void setNameForPrivateConversation(String curUsername, Conversation conversation) {
+        if (conversation == null) {
+            return;
+        }
+        String name = conversation.getName();
+        String recipientUsername = ConversationUtils.getRemainderUser(name, curUsername);
+        conversation.setName(recipientUsername);
     }
 }

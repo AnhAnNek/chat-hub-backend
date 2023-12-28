@@ -14,7 +14,6 @@ public class UserDTO {
     @JsonIgnore
     private String passHash;
     private String fullName;
-    @JsonIgnore
     private String email;
     private User.EGender gender;
 }

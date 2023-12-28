@@ -25,6 +25,7 @@ public class ConversationDTO {
     private Conversation.EType type;
     private String name;
     private ChatMessageDTO lastMessageDTO;
+    private int unreadMessages = 0;
 
     @JsonIgnore
     private List<ChatMessageDTO> chatMessageDTOs = new ArrayList<>();
@@ -52,36 +53,5 @@ public class ConversationDTO {
             memberDTOs = new HashSet<>();
         }
         memberDTOs.add(memberDTO);
-    }
-
-    public String getLastTimeAgo() {
-        if (lastMessageDTO == null || lastMessageDTO.getSendingTime() == null) {
-            return "";
-        }
-
-        Timestamp sendingTime = lastMessageDTO.getSendingTime();
-        LocalDateTime currentTime = LocalDateTime.now();
-        LocalDateTime messageTime = sendingTime.toLocalDateTime();
-        Duration duration = Duration.between(currentTime, messageTime);
-
-        long days = duration.toDays();
-        long hours = duration.toHours() % 24;
-        long minutes = duration.toMinutes() % 60;
-
-        StringBuilder result = new StringBuilder();
-
-        if (days > 0) {
-            result.append(days).append(" day").append(days > 1 ? "s" : "");
-        } else if (hours > 0) {
-            result.append(hours).append(" hour").append(hours > 1 ? "s" : "");
-        } else if (minutes > 0) {
-            result.append(minutes).append(" minute").append(minutes > 1 ? "s" : "");
-        } else {
-            result.append("just now");
-        }
-
-        result.append(" ago");
-
-        return result.toString();
     }
 }
