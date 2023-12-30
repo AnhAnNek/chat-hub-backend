@@ -5,13 +5,12 @@ import com.vanannek.repos.UserRepos;
 import com.vanannek.dto.UserDTO;
 import com.vanannek.entity.User;
 import com.vanannek.mapper.UserMapper;
-import com.vanannek.util.PasswordEncoderUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -19,6 +18,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired private UserRepos userRepos;
     private final UserMapper userMapper = UserMapper.INSTANCE;
+    @Autowired private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDTO save(UserDTO userDTO) {
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
                 .findById(username)
                 .orElseThrow(() -> new UserNotFoundException("Could not found any users with username=" + username));
         String hashedPass = user.getPassHash();
-        return PasswordEncoderUtils.comparePass(plainPass, hashedPass);
+        return passwordEncoder.matches(plainPass, hashedPass);
     }
 
     @Override

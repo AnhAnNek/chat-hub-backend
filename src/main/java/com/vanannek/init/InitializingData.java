@@ -11,11 +11,11 @@ import com.vanannek.entity.User;
 import com.vanannek.service.conversation.ConversationService;
 import com.vanannek.service.user.UserService;
 import com.vanannek.util.ConversationUtils;
-import com.vanannek.util.PasswordEncoderUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -32,6 +32,7 @@ public class InitializingData implements CommandLineRunner {
 
     private final UserService userService;
     private final ConversationService conversationService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -53,8 +54,8 @@ public class InitializingData implements CommandLineRunner {
     }
 
     private List<UserDTO> initUsers() {
-        final String DEFAULT_HASHED_PASS = PasswordEncoderUtils
-                .encodePassword("123456");
+        final String DEFAULT_HASHED_PASS = passwordEncoder
+                .encode("123456");
 
         List<UserDTO> userDTOs = new ArrayList<>();
         userDTOs.add(UserDTO.builder()

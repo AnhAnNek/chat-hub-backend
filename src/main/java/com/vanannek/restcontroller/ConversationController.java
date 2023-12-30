@@ -6,9 +6,8 @@ import com.vanannek.dto.ConversationMemberDTO;
 import com.vanannek.entity.ChatMessage;
 import com.vanannek.entity.Conversation;
 import com.vanannek.entity.ConversationMember;
-import com.vanannek.exception.ConversationNotFoundException;
-import com.vanannek.record.AddGroupRequest;
-import com.vanannek.record.DeleteMemberRequest;
+import com.vanannek.request.AddGroupRequest;
+import com.vanannek.request.DeleteMemberRequest;
 import com.vanannek.service.conversation.ConversationService;
 import com.vanannek.service.conversationmember.ConversationMemberService;
 import com.vanannek.util.ConversationUtils;
@@ -25,9 +24,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/conversations")
-public class ConversationRestController {
+public class ConversationController {
 
-    private static final Logger log = LogManager.getLogger(ConversationRestController.class);
+    private static final Logger log = LogManager.getLogger(ConversationController.class);
 
     @Autowired private ConversationService conversationService;
     @Autowired private ConversationMemberService memberService;

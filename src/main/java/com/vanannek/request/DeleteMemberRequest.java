@@ -1,4 +1,4 @@
-package com.vanannek.record;
+package com.vanannek.request;
 
 public record DeleteMemberRequest(
         String memberUsername,

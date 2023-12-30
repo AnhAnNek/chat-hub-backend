@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/files")
-public class FileRestController {
+public class FileController {
 
     @GetMapping("/get-avatar")
     public String getAvatar(@RequestParam("username") String username, @RequestParam("genderStr") User.EGender gender) {

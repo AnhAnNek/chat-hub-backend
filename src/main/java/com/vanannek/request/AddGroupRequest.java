@@ -1,4 +1,4 @@
-package com.vanannek.record;
+package com.vanannek.request;
 
 import java.util.List;
 
