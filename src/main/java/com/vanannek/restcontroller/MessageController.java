@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/messages")
-public class MessageRestController {
+public class MessageController {
 
     @Autowired private MessageService messageService;
 
