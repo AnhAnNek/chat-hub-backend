@@ -1,6 +1,6 @@
 package com.vanannek.util;
 
-import com.vanannek.entity.User;
+import com.vanannek.user.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.Resource;

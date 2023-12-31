@@ -1,8 +1,8 @@
 package com.vanannek.security;
 
-import com.vanannek.entity.User;
-import com.vanannek.exception.UserNotFoundException;
-import com.vanannek.repos.UserRepos;
+import com.vanannek.user.User;
+import com.vanannek.user.UserNotFoundException;
+import com.vanannek.user.UserRepos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

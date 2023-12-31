@@ -1,7 +1,7 @@
 package com.vanannek.websocket;
 
-import com.vanannek.dto.ChatMessageDTO;
-import com.vanannek.service.message.MessageService;
+import com.vanannek.chat.message.ChatMessageDTO;
+import com.vanannek.chat.message.service.MessageService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
