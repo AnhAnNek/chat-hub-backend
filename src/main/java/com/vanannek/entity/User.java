@@ -41,4 +41,7 @@ public class User {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private Set<ConversationMember> memberships = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Notification> notifications = new ArrayList<>();
 }

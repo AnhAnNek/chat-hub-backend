@@ -60,7 +60,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
-        if (userService.getUserByUsername(registerRequest.username()) != null) {
+        if (userService.exists(registerRequest.username())) {
             return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);
         }
 

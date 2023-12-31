@@ -1,14 +1,12 @@
 package com.vanannek.init;
 
-import com.vanannek.dto.ChatMessageDTO;
-import com.vanannek.dto.ConversationDTO;
-import com.vanannek.dto.ConversationMemberDTO;
-import com.vanannek.dto.UserDTO;
+import com.vanannek.dto.*;
 import com.vanannek.entity.ChatMessage;
 import com.vanannek.entity.Conversation;
 import com.vanannek.entity.ConversationMember;
 import com.vanannek.entity.User;
 import com.vanannek.service.conversation.ConversationService;
+import com.vanannek.service.notificaiton.NotificationService;
 import com.vanannek.service.user.UserService;
 import com.vanannek.util.ConversationUtils;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +30,7 @@ public class InitializingData implements CommandLineRunner {
 
     private final UserService userService;
     private final ConversationService conversationService;
+    private final NotificationService notificationService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -43,6 +42,7 @@ public class InitializingData implements CommandLineRunner {
     private void deleteAll() {
         conversationService.deleteAll();
         userService.deleteAll();
+        notificationService.deleteAll();
     }
 
     private void initData() {
@@ -51,6 +51,8 @@ public class InitializingData implements CommandLineRunner {
         ConversationDTO savedPrivateConversationDTO1 = initPrivateConversation(userDTOs.get(2), userDTOs.get(0));
         ConversationDTO savedPrivateConversationDTO3 = initPrivateConversation(userDTOs.get(0), userDTOs.get(3));
         ConversationDTO savedGroup = initGroup(userDTOs);
+
+        List<NotificationDTO> savedNotifications = initNotifications(userDTOs.get(0));
     }
 
     private List<UserDTO> initUsers() {
@@ -319,5 +321,25 @@ public class InitializingData implements CommandLineRunner {
         ConversationDTO saved = conversationService.saveConversationWithMessagesAndMembers(conversationDTO);
 
         return saved;
+    }
+
+    public List<NotificationDTO> initNotifications(UserDTO userDTO) {
+        String username = userDTO != null ? userDTO.getUsername() : "";
+        NotificationDTO notification1 = new NotificationDTO("New message received", username);
+        NotificationDTO notification2 = new NotificationDTO("Meeting reminder", username);
+        NotificationDTO notification3 = new NotificationDTO("You have a new follower", username);
+        NotificationDTO notification4 = new NotificationDTO("Update: Your post has comments", username);
+        NotificationDTO notification5 = new NotificationDTO("Update: Your post has comments", username);
+
+        List<NotificationDTO> notificationDTOs =
+                List.of(notification1, notification2, notification3, notification4, notification5);
+
+        List<NotificationDTO> savedNotificationDTOs = new ArrayList<>();
+        for (NotificationDTO notificationDTO : notificationDTOs) {
+            NotificationDTO savedDTO = notificationService.add(notificationDTO);
+            savedNotificationDTOs.add(savedDTO);
+        }
+
+        return savedNotificationDTOs;
     }
 }

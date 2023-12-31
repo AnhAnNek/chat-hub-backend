@@ -18,7 +18,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired private UserRepos userRepos;
     private final UserMapper userMapper = UserMapper.INSTANCE;
-    @Autowired private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDTO save(UserDTO userDTO) {
@@ -29,7 +28,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getUserByUsername(String username) {
-        User user = userRepos.getReferenceById(username);
+        User user = userRepos.findById(username)
+                .orElseThrow(() -> new UserNotFoundException("Could not find any users with username:" + username));
         return userMapper.toDTO(user);
     }
 
@@ -45,20 +45,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean login(String username, String plainPass) {
-        User user = userRepos
-                .findById(username)
-                .orElseThrow(() -> new UserNotFoundException("Could not found any users with username=" + username));
-        String hashedPass = user.getPassHash();
-        return passwordEncoder.matches(plainPass, hashedPass);
-    }
-
-    @Override
-    public User.EGender getGenderByUsername(String username) {
-        return userRepos.getGenderByUsername(username);
-    }
-
-    @Override
     public List<UserDTO> getUsersWithoutCurUser(String username) {
         List<UserDTO> users = getAll();
         users.removeIf(u -> u.getUsername().equals(username));
@@ -69,5 +55,10 @@ public class UserServiceImpl implements UserService {
     public List<UserDTO> getUnchattedUsers(String curUsername) {
         List<User> users = userRepos.getUnchattedUsers(curUsername);
         return userMapper.toDTOs(users);
+    }
+
+    @Override
+    public boolean exists(String username) {
+        return userRepos.existsById(username);
     }
 }

@@ -2,11 +2,9 @@ package com.vanannek.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class NotificationDTO {
@@ -15,4 +13,15 @@ public class NotificationDTO {
     private String username;
     private boolean read;
     private LocalDateTime createdAt;
+
+    public NotificationDTO() {
+        read = false;
+        createdAt = LocalDateTime.now();
+    }
+
+    public NotificationDTO(String message, String username) {
+        this();
+        this.message = message;
+        this.username = username;
+    }
 }
