@@ -33,6 +33,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private EGender gender;
 
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+
     @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY)
     private List<ChatMessage> sentMessages = new ArrayList<>();
 

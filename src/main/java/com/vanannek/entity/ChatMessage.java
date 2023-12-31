@@ -3,7 +3,7 @@ package com.vanannek.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "chat_messages")
@@ -30,7 +30,7 @@ public class ChatMessage {
     private EType type;
 
     @Column(name = "sending_time")
-    private Timestamp sendingTime;
+    private LocalDateTime sendingTime;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "sender_username")

@@ -18,7 +18,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -130,57 +130,57 @@ public class InitializingData implements CommandLineRunner {
     private ConversationDTO initPrivateConversation(UserDTO senderDTO, UserDTO recipientDTO) {
         List<ChatMessageDTO> messageDTOs = new ArrayList<>();
 
-        long currentTime = System.currentTimeMillis();
+        LocalDateTime currentTime = LocalDateTime.now();
 
         String joinStr = String.format("`%s` joined!", senderDTO.getUsername());
         messageDTOs.add(ChatMessageDTO.builder()
                 .content(joinStr)
                 .type(ChatMessage.EType.NOTIFICATION)
-                .sendingTime(new Timestamp(currentTime))
+                .sendingTime(currentTime)
                 .senderUsername(senderDTO.getUsername())
                 .build());
-        currentTime += 1000;
+        currentTime = currentTime.plusSeconds(1);
 
         messageDTOs.add(ChatMessageDTO.builder()
                 .content("Hi there!")
                 .type(ChatMessage.EType.CHAT)
-                .sendingTime(new Timestamp(currentTime))
+                .sendingTime(currentTime)
                 .senderUsername(senderDTO.getUsername())
                 .build());
-        currentTime += 1000;
+        currentTime = currentTime.plusSeconds(1);
 
         messageDTOs.add(ChatMessageDTO.builder()
                 .content("Hello!")
                 .type(ChatMessage.EType.CHAT)
-                .sendingTime(new Timestamp(currentTime))
+                .sendingTime(currentTime)
                 .senderUsername(recipientDTO.getUsername())
                 .build());
-        currentTime += 1000;
+        currentTime = currentTime.plusSeconds(1);
 
         messageDTOs.add(ChatMessageDTO.builder()
                 .content("Where do you live!")
                 .type(ChatMessage.EType.CHAT)
-                .sendingTime(new Timestamp(currentTime))
+                .sendingTime(currentTime)
                 .senderUsername(recipientDTO.getUsername())
                 .build());
-        currentTime += 1000;
+        currentTime = currentTime.plusSeconds(1);
 
         messageDTOs.add(ChatMessageDTO.builder()
                 .content("I live in my country! Hihi")
                 .type(ChatMessage.EType.CHAT)
-                .sendingTime(new Timestamp(currentTime))
+                .sendingTime(currentTime)
                 .senderUsername(senderDTO.getUsername())
                 .build());
-        currentTime += 1000;
+        currentTime = currentTime.plusSeconds(1);
 
         messageDTOs.add(ChatMessageDTO.builder()
                 .content("Let's check out the <span class=\"copyable-text\" " +
                         "onclick=\"copyToClipboardAndNotify('feature/crud-deck')\">feature/crud-deck</span> branch.")
                 .type(ChatMessage.EType.CHAT)
-                .sendingTime(new Timestamp(currentTime))
+                .sendingTime(currentTime)
                 .senderUsername(senderDTO.getUsername())
                 .build());
-        currentTime += 1000;
+        currentTime = currentTime.plusSeconds(1);
 
         messageDTOs.add(ChatMessageDTO.builder()
                 .content("<a href=\"https://www.quora.com/What-characters-are-invalid-in-a-URL\" " +
@@ -188,16 +188,16 @@ public class InitializingData implements CommandLineRunner {
                         "<a href=\"https://www.quora.com/What-characters-are-invalid-in-a-URL\" " +
                         "target=\"_blank\">https://www.quora.com/What-characters-are-invalid-in-a-URL</a>")
                 .type(ChatMessage.EType.CHAT)
-                .sendingTime(new Timestamp(currentTime))
+                .sendingTime(currentTime)
                 .senderUsername(senderDTO.getUsername())
                 .build());
-        currentTime += 1000;
+        currentTime = currentTime.plusSeconds(1);
 
         messageDTOs.add(ChatMessageDTO.builder()
                 .content("<span class=\"copyable-text\" " +
                         "onclick=\"copyToClipboardAndNotify('https://getbootstrap.com/')\">https://getbootstrap.com/</span>")
                 .type(ChatMessage.EType.CHAT)
-                .sendingTime(new Timestamp(currentTime))
+                .sendingTime(currentTime)
                 .senderUsername(senderDTO.getUsername())
                 .build());
 
@@ -224,65 +224,65 @@ public class InitializingData implements CommandLineRunner {
 
         List<ChatMessageDTO> messageDTOs = new ArrayList<>();
 
-        long currentTime = System.currentTimeMillis();
+        LocalDateTime currentTime = LocalDateTime.now();
 
         String joinStr = String.format("`%s` joined!", user0.getUsername());
         messageDTOs.add(ChatMessageDTO.builder()
                 .content(joinStr)
                 .type(ChatMessage.EType.NOTIFICATION)
-                .sendingTime(new Timestamp(currentTime))
+                .sendingTime(currentTime)
                 .senderUsername(user0.getUsername())
                 .build());
-        currentTime += 1000;
+        currentTime = currentTime.plusSeconds(1);
 
         messageDTOs.add(ChatMessageDTO.builder()
                 .content("Hi there!")
                 .type(ChatMessage.EType.CHAT)
-                .sendingTime(new Timestamp(currentTime))
+                .sendingTime(currentTime)
                 .senderUsername(user0.getUsername())
                 .build());
-        currentTime += 1000;
+        currentTime = currentTime.plusSeconds(1);
 
         messageDTOs.add(ChatMessageDTO.builder()
                 .content("Hi there!")
                 .type(ChatMessage.EType.CHAT)
-                .sendingTime(new Timestamp(currentTime))
+                .sendingTime(currentTime)
                 .senderUsername(user1.getUsername())
                 .build());
-        currentTime += 1000;
+        currentTime = currentTime.plusSeconds(1);
 
         messageDTOs.add(ChatMessageDTO.builder()
                 .content("Hello!")
                 .type(ChatMessage.EType.CHAT)
-                .sendingTime(new Timestamp(currentTime))
+                .sendingTime(currentTime)
                 .senderUsername(user1.getUsername())
                 .build());
-        currentTime += 1000;
+        currentTime = currentTime.plusSeconds(1);
 
         messageDTOs.add(ChatMessageDTO.builder()
                 .content("Where do you live!")
                 .type(ChatMessage.EType.CHAT)
-                .sendingTime(new Timestamp(currentTime))
+                .sendingTime(currentTime)
                 .senderUsername(user2.getUsername())
                 .build());
-        currentTime += 1000;
+        currentTime = currentTime.plusSeconds(1);
 
         messageDTOs.add(ChatMessageDTO.builder()
                 .content("I live in my country! Hihi")
                 .type(ChatMessage.EType.CHAT)
-                .sendingTime(new Timestamp(currentTime))
+                .sendingTime(currentTime)
                 .senderUsername(user3.getUsername())
                 .build());
-        currentTime += 1000;
+        currentTime = currentTime.plusSeconds(1);
 
         messageDTOs.add(ChatMessageDTO.builder()
                 .content("Let's check out the <span class=\"copyable-text\" " +
                         "onclick=\"copyToClipboardAndNotify('feature/crud-deck')\">feature/crud-deck</span> branch.")
                 .type(ChatMessage.EType.CHAT)
-                .sendingTime(new Timestamp(currentTime))
+                .sendingTime(currentTime)
                 .senderUsername(user3.getUsername())
                 .build());
-        currentTime += 1000;
+        currentTime = currentTime.plusSeconds(1);
 
         messageDTOs.add(ChatMessageDTO.builder()
                 .content("<a href=\"https://www.quora.com/What-characters-are-invalid-in-a-URL\" " +
@@ -290,16 +290,16 @@ public class InitializingData implements CommandLineRunner {
                         "<a href=\"https://www.quora.com/What-characters-are-invalid-in-a-URL\" " +
                         "target=\"_blank\">https://www.quora.com/What-characters-are-invalid-in-a-URL</a>")
                 .type(ChatMessage.EType.CHAT)
-                .sendingTime(new Timestamp(currentTime))
+                .sendingTime(currentTime)
                 .senderUsername(user2.getUsername())
                 .build());
-        currentTime += 1000;
+        currentTime = currentTime.plusSeconds(1);
 
         messageDTOs.add(ChatMessageDTO.builder()
                 .content("<span class=\"copyable-text\" " +
                         "onclick=\"copyToClipboardAndNotify('https://getbootstrap.com/')\">https://getbootstrap.com/</span>")
                 .type(ChatMessage.EType.CHAT)
-                .sendingTime(new Timestamp(currentTime))
+                .sendingTime(currentTime)
                 .senderUsername(user2.getUsername())
                 .build());
 

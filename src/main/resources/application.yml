@@ -30,3 +30,6 @@ logging:
         name: mylog.log
     level:
         root: info
+
+frontend:
+    url: ${PROD_FRONTEND_URL}

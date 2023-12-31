@@ -18,8 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -95,7 +94,7 @@ public class ConversationController {
         ChatMessageDTO chatMessageDTO = ChatMessageDTO.builder()
                 .content("Start new conversation")
                 .type(ChatMessage.EType.NOTIFICATION)
-                .sendingTime(Timestamp.from(Instant.now()))
+                .sendingTime(LocalDateTime.now())
                 .senderUsername(curUsername)
                 .build();
 
@@ -130,7 +129,7 @@ public class ConversationController {
         ChatMessageDTO chatMessageDTO = ChatMessageDTO.builder()
                 .content(msg)
                 .type(ChatMessage.EType.NOTIFICATION)
-                .sendingTime(Timestamp.from(Instant.now()))
+                .sendingTime(LocalDateTime.now())
                 .senderUsername(curUsername)
                 .build();
 

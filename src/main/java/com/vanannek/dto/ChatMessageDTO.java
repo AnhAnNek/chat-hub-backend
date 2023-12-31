@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,7 +16,7 @@ public class ChatMessageDTO {
     private Long id;
     private String content;
     private ChatMessage.EType type;
-    private Timestamp sendingTime;
+    private LocalDateTime sendingTime;
     private String senderUsername;
     private String conversationId;
 }

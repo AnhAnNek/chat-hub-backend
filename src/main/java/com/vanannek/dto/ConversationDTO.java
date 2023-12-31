@@ -2,15 +2,11 @@ package com.vanannek.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vanannek.entity.Conversation;
-import com.vanannek.entity.ConversationMember;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +22,7 @@ public class ConversationDTO {
     private String name;
     private ChatMessageDTO lastMessageDTO;
     private int unreadMessages = 0;
+    private boolean isDeleted;
 
     @JsonIgnore
     private List<ChatMessageDTO> chatMessageDTOs = new ArrayList<>();
