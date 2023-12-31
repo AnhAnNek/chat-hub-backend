@@ -35,9 +35,13 @@ public class Comment {
     @Column(name = "is_deleted")
     private boolean isDeleted;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
+
+    @ManyToOne
+    @JoinColumn(name = "username", nullable = false)
+    private User user;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
     private List<CommentReaction> reactions;

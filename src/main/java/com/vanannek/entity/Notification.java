@@ -21,7 +21,7 @@ public class Notification {
     private String message;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "username", nullable = false)
     private User user;
 
     private boolean read;

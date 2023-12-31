@@ -10,7 +10,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
-import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 import java.util.List;
@@ -24,6 +23,7 @@ public interface ConversationMapper {
     @Mapping(target = "lastMessageDTO", expression = "java(findLastMessage(conversation))")
     @Mapping(target = "chatMessageDTOs", source = "chatMessages")
     @Mapping(target = "memberDTOs", source = "members", qualifiedByName = "toMemberDTOs")
+    @Mapping(target = "unreadMessages", ignore = true)
     ConversationDTO toDTO(Conversation conversation);
 
     List<ConversationDTO> toDTOs(List<Conversation> conversations);

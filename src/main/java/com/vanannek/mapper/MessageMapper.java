@@ -22,8 +22,6 @@ public interface MessageMapper {
 
     List<ChatMessageDTO> toDTOs(List<ChatMessage> chatMessages);
 
-    @Mapping(target = "sender.username", source = "senderUsername")
-    @Mapping(target = "conversation.id", source = "conversationId")
     ChatMessage toEntity(ChatMessageDTO ChatMessageDTO);
 
     List<ChatMessage> toEntities(List<ChatMessageDTO> chatMessageDTOs);
