@@ -1,4 +1,4 @@
-package com.vanannek.handler;
+package com.vanannek.websocket;
 
 import com.vanannek.dto.ChatMessageDTO;
 import com.vanannek.service.message.MessageService;

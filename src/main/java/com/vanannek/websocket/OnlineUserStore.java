@@ -1,4 +1,4 @@
-package com.vanannek.store;
+package com.vanannek.websocket;
 
 import java.util.ArrayList;
 import java.util.HashSet;

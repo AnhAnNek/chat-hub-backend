@@ -1,7 +1,5 @@
-package com.vanannek.listener;
+package com.vanannek.websocket;
 
-import com.vanannek.handler.CustomMessageHandler;
-import com.vanannek.store.OnlineUserStore;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
