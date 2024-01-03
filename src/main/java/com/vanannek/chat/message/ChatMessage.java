@@ -13,8 +13,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Data
-@EqualsAndHashCode(exclude = {"conversation"})
-@ToString(exclude = "conversation")
 public class ChatMessage {
     public enum EType {
         CHAT,
@@ -40,6 +38,8 @@ public class ChatMessage {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "conversation_id", nullable = false)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Conversation conversation;
 
     @Transient

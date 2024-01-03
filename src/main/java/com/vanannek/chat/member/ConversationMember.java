@@ -10,8 +10,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(exclude = {"conversation"})
-@ToString(exclude = "conversation")
 public class ConversationMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +21,8 @@ public class ConversationMember {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conversation_id", nullable = false)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Conversation conversation;
 
     @Enumerated(EnumType.STRING)

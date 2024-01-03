@@ -1,11 +1,10 @@
 package com.vanannek.socialmedia.comment;
 
+import com.vanannek.socialmedia.commentreaction.CommentReaction;
 import com.vanannek.socialmedia.post.Post;
 import com.vanannek.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,10 +20,6 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "parent_id")
-    private Comment parent;
-
     @Column(columnDefinition = "TEXT")
     private String content;
 
@@ -39,12 +34,17 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Post post;
 
     @ManyToOne
     @JoinColumn(name = "username", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<CommentReaction> reactions;
+
+    @Transient
+    private String username;
 }

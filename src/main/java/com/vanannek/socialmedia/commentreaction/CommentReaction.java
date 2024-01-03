@@ -1,6 +1,7 @@
-package com.vanannek.socialmedia.comment;
+package com.vanannek.socialmedia.commentreaction;
 
 import com.vanannek.socialmedia.EReactionType;
+import com.vanannek.socialmedia.comment.Comment;
 import com.vanannek.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

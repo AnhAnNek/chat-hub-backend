@@ -1,5 +1,7 @@
 package com.vanannek.socialmedia.comment;
 
+import com.vanannek.socialmedia.commentreaction.CommentReaction;
+import com.vanannek.socialmedia.commentreaction.CommentReactionDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -11,13 +13,16 @@ import java.util.List;
 public interface CommentMapper {
     CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
 
-    @Mapping(target = "parentId", source = "parent.id", defaultExpression = "java(0L)")
     @Mapping(target = "postId", source = "post.id")
     @Mapping(target = "username", source = "user.username")
+    @Mapping(target = "reactions", ignore = true)
     CommentDTO toDTO(Comment comment);
 
     List<CommentDTO> toDTOs(List<Comment> comments);
 
+    @Mapping(target = "post", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "reactions", ignore = true)
     Comment toEntity(CommentDTO commentDTO);
 
     List<Comment> toEntities(List<CommentDTO> commentDTOs);
@@ -31,6 +36,8 @@ public interface CommentMapper {
     @Named("toReactions")
     List<CommentReaction> toReactions(List<CommentReactionDTO> commentReactionDTOs);
 
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "comment", ignore = true)
     CommentReaction toReactionEntity(CommentReactionDTO commentReactionDTO);
 
     List<CommentReaction> toReactionEntities(List<CommentReactionDTO> commentReactionDTOs);

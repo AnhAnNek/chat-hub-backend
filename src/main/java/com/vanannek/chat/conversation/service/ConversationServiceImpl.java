@@ -11,22 +11,21 @@ import com.vanannek.chat.message.ChatMessageRepos;
 import com.vanannek.chat.member.ConversationMemberRepos;
 import com.vanannek.chat.conversation.ConversationRepos;
 import com.vanannek.user.UserRepos;
-import com.vanannek.util.ConversationUtils;
+import com.vanannek.chat.conversation.ConversationUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ConversationServiceImpl implements ConversationService {
 
-    @Autowired private ConversationRepos conversationRepos;
-    @Autowired private ChatMessageRepos messageRepos;
-    @Autowired private ConversationMemberRepos memberRepos;
-    @Autowired private UserRepos userRepos;
+    private final ConversationRepos conversationRepos;
+    private final ConversationMemberRepos memberRepos;
+    private final UserRepos userRepos;
     private final ConversationMapper conversationMapper = ConversationMapper.INSTANCE;
-    private final MessageMapper messageMapper = MessageMapper.INSTANCE;
-    private final ConversationMemberMapper memberMapper = ConversationMemberMapper.INSTANCE;
 
     @Override
     public ConversationDTO save(ConversationDTO conversationDTO) {
@@ -45,7 +44,6 @@ public class ConversationServiceImpl implements ConversationService {
             }
 
             String senderUsername = chatMessage.getSenderUsername();
-
 
             User sender = userRepos.findById(senderUsername)
                             .orElse(null);

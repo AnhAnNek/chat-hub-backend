@@ -1,4 +1,4 @@
-package com.vanannek.socialmedia.post;
+package com.vanannek.socialmedia.commentreaction;
 
 import com.vanannek.socialmedia.EReactionType;
 import lombok.AllArgsConstructor;
@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class PostReactionDTO {
+public class CommentReactionDTO {
     private Long id;
     private String username;
-    private Long postId;
+    private Long commentId;
     private EReactionType type;
 }

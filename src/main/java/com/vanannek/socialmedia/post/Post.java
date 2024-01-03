@@ -1,6 +1,7 @@
 package com.vanannek.socialmedia.post;
 
 import com.vanannek.socialmedia.comment.Comment;
+import com.vanannek.socialmedia.postreaction.PostReaction;
 import com.vanannek.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

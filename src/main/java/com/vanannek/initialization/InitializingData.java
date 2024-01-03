@@ -1,18 +1,24 @@
 package com.vanannek.initialization;
 
+import com.vanannek.chat.conversation.Conversation;
 import com.vanannek.chat.conversation.ConversationDTO;
+import com.vanannek.chat.conversation.ConversationUtils;
+import com.vanannek.chat.conversation.service.ConversationService;
+import com.vanannek.chat.member.ConversationMember;
 import com.vanannek.chat.member.ConversationMemberDTO;
 import com.vanannek.chat.message.ChatMessage;
-import com.vanannek.chat.conversation.Conversation;
-import com.vanannek.chat.member.ConversationMember;
 import com.vanannek.chat.message.ChatMessageDTO;
 import com.vanannek.notification.NotificationDTO;
-import com.vanannek.user.User;
-import com.vanannek.chat.conversation.service.ConversationService;
 import com.vanannek.notification.service.NotificationService;
+import com.vanannek.socialmedia.EReactionType;
+import com.vanannek.socialmedia.comment.CommentDTO;
+import com.vanannek.socialmedia.post.Post;
+import com.vanannek.socialmedia.post.PostDTO;
+import com.vanannek.socialmedia.post.service.PostService;
+import com.vanannek.socialmedia.postreaction.PostReactionDTO;
+import com.vanannek.user.User;
 import com.vanannek.user.UserDTO;
 import com.vanannek.user.service.UserService;
-import com.vanannek.util.ConversationUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,6 +41,7 @@ public class InitializingData implements CommandLineRunner {
     private final UserService userService;
     private final ConversationService conversationService;
     private final NotificationService notificationService;
+    private final PostService postService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -56,7 +63,9 @@ public class InitializingData implements CommandLineRunner {
         ConversationDTO savedPrivateConversationDTO3 = initPrivateConversation(userDTOs.get(0), userDTOs.get(3));
         ConversationDTO savedGroup = initGroup(userDTOs);
 
-        List<NotificationDTO> savedNotifications = initNotifications(userDTOs.get(0));
+        List<NotificationDTO> savedNotificationDTOs = initNotifications(userDTOs.get(0));
+
+        PostDTO savedPost = initPost(userDTOs);
     }
 
     private List<UserDTO> initUsers() {
@@ -345,5 +354,37 @@ public class InitializingData implements CommandLineRunner {
         }
 
         return savedNotificationDTOs;
+    }
+
+    public PostDTO initPost(List<UserDTO> userDTOs) {
+        String ownerUsername = userDTOs.get(0).getUsername();
+
+        List<PostReactionDTO> postReactionDTOs = new ArrayList<>();
+        List<CommentDTO> commentDTOs = new ArrayList<>();
+
+        for (UserDTO userDTO : userDTOs) {
+            String username = userDTO.getUsername();
+            postReactionDTOs.add( new PostReactionDTO(username, EReactionType.LIKE.name()) );
+
+            commentDTOs.add( CommentDTO.builder()
+                            .content(username + " hihihi!")
+                            .createdAt(LocalDateTime.now())
+                            .updatedAt(LocalDateTime.now())
+                            .username(username)
+                            .build() );
+        }
+
+        PostDTO postDTO = PostDTO.builder()
+                .content("Post content")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .status(Post.EStatus.ACTIVE.toString())
+                .username(ownerUsername)
+                .build();
+        postDTO.addReactions(postReactionDTOs);
+        postDTO.addComments(commentDTOs);
+
+        PostDTO saved = postService.savePostWithReactionsAndComments(postDTO);
+        return saved;
     }
 }

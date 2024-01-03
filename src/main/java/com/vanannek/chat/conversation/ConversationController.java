@@ -7,7 +7,6 @@ import com.vanannek.chat.message.ChatMessageDTO;
 import com.vanannek.chat.message.ChatMessage;
 import com.vanannek.chat.conversation.service.ConversationService;
 import com.vanannek.chat.member.service.ConversationMemberService;
-import com.vanannek.util.ConversationUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

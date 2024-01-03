@@ -1,4 +1,4 @@
-package com.vanannek.util;
+package com.vanannek.chat.conversation;
 
 public class ConversationUtils {
     private static final String KEY_PATTERN = "%s&%s";

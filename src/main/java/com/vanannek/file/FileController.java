@@ -1,7 +1,6 @@
 package com.vanannek.file;
 
 import com.vanannek.user.User;
-import com.vanannek.util.FileUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

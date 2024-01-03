@@ -23,7 +23,6 @@ public class ConversationDTO {
     private String name;
     private ChatMessageDTO lastMessageDTO;
     private int unreadMessages = 0;
-    private boolean isDeleted;
 
     @JsonIgnore
     private List<ChatMessageDTO> chatMessageDTOs = new ArrayList<>();

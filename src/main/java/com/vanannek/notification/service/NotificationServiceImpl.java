@@ -24,7 +24,8 @@ public class NotificationServiceImpl implements NotificationService {
     public NotificationDTO add(NotificationDTO notificationDTO) {
         Notification notification = nMapper.toEntity(notificationDTO);
 
-        String username = notificationDTO.getUsername();
+        String username = notificationDTO.getUsername() != null
+                ? notificationDTO.getUsername() : "";
         User user = userRepos.findById(username)
                         .orElseThrow(() -> new UserNotFoundException("Could not find any user with username=" + username));
         notification.setUser(user);

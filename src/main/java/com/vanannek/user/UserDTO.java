@@ -16,5 +16,4 @@ public class UserDTO {
     private String fullName;
     private String email;
     private User.EGender gender;
-    private boolean isDeleted;
 }

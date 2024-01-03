@@ -29,9 +29,6 @@ public class Conversation {
 
     private String name;
 
-    @Column(name = "is_deleted")
-    private boolean isDeleted;
-
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
