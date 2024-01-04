@@ -1,5 +1,6 @@
 package com.vanannek.socialmedia.post;
 
+import com.vanannek.socialmedia.EReactionType;
 import com.vanannek.socialmedia.postreaction.PostReaction;
 import com.vanannek.socialmedia.postreaction.PostReactionDTO;
 import org.mapstruct.Mapper;
@@ -30,7 +31,13 @@ public interface PostMapper {
 
     @Mapping(target = "username", source = "user.username")
     @Mapping(target = "postId", source = "post.id")
+    @Mapping(source = "type", target = "type", qualifiedByName = "mapTypeToString")
     PostReactionDTO toReactionDTO(PostReaction postReaction);
+
+    @Named("mapTypeToString")
+    default String mapTypeToString(EReactionType type) {
+        return type.name();
+    }
 
     List<PostReactionDTO> toReactionDTOs(List<PostReaction> postReactions);
 

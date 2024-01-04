@@ -1,6 +1,5 @@
 package com.vanannek.socialmedia.commentreaction;
 
-import com.vanannek.socialmedia.EReactionType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,5 +11,10 @@ public class CommentReactionDTO {
     private Long id;
     private String username;
     private Long commentId;
-    private EReactionType type;
+    private String type;
+
+    public CommentReactionDTO(String username, String type) {
+        this.username = username;
+        this.type = type;
+    }
 }

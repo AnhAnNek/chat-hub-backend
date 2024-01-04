@@ -15,14 +15,12 @@ public interface CommentMapper {
 
     @Mapping(target = "postId", source = "post.id")
     @Mapping(target = "username", source = "user.username")
-    @Mapping(target = "reactions", ignore = true)
     CommentDTO toDTO(Comment comment);
 
     List<CommentDTO> toDTOs(List<Comment> comments);
 
     @Mapping(target = "post", ignore = true)
     @Mapping(target = "user", ignore = true)
-    @Mapping(target = "reactions", ignore = true)
     Comment toEntity(CommentDTO commentDTO);
 
     List<Comment> toEntities(List<CommentDTO> commentDTOs);

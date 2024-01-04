@@ -1,6 +1,7 @@
 package com.vanannek.socialmedia.comment;
 
 import com.vanannek.socialmedia.commentreaction.CommentReactionDTO;
+import com.vanannek.socialmedia.postreaction.PostReactionDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +23,16 @@ public class CommentDTO {
     private Long postId;
     private String username;
 
-    private List<CommentReactionDTO> reactions = new ArrayList<>();
+    private List<CommentReactionDTO> reactions;
 
+    public void addReactions(List<CommentReactionDTO> postReactions) {
+        postReactions.forEach(this::addReaction);
+    }
 
+    public void addReaction(CommentReactionDTO postReaction) {
+        if (reactions == null) {
+            reactions = new ArrayList<>();
+        }
+        reactions.add(postReaction);
+    }
 }

@@ -28,4 +28,10 @@ public class CommentReaction {
 
     @Enumerated(EnumType.STRING)
     private EReactionType type;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+
+    @Transient
+    private String username;
 }

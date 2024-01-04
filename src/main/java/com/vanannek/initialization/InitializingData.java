@@ -12,6 +12,7 @@ import com.vanannek.notification.NotificationDTO;
 import com.vanannek.notification.service.NotificationService;
 import com.vanannek.socialmedia.EReactionType;
 import com.vanannek.socialmedia.comment.CommentDTO;
+import com.vanannek.socialmedia.commentreaction.CommentReactionDTO;
 import com.vanannek.socialmedia.post.Post;
 import com.vanannek.socialmedia.post.PostDTO;
 import com.vanannek.socialmedia.post.service.PostService;
@@ -362,16 +363,17 @@ public class InitializingData implements CommandLineRunner {
         List<PostReactionDTO> postReactionDTOs = new ArrayList<>();
         List<CommentDTO> commentDTOs = new ArrayList<>();
 
-        for (UserDTO userDTO : userDTOs) {
-            String username = userDTO.getUsername();
-            postReactionDTOs.add( new PostReactionDTO(username, EReactionType.LIKE.name()) );
+        for (UserDTO userForPost : userDTOs) {
+            String usernameForPost = userForPost.getUsername();
+            postReactionDTOs.add( new PostReactionDTO(usernameForPost, EReactionType.LIKE.name()) );
 
-            commentDTOs.add( CommentDTO.builder()
-                            .content(username + " hihihi!")
-                            .createdAt(LocalDateTime.now())
-                            .updatedAt(LocalDateTime.now())
-                            .username(username)
-                            .build() );
+            CommentDTO commentDTO = CommentDTO.builder()
+                    .content(usernameForPost + " hihihi!")
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .username(usernameForPost)
+                    .build();
+            commentDTOs.add(commentDTO);
         }
 
         PostDTO postDTO = PostDTO.builder()

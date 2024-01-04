@@ -55,10 +55,10 @@ public class PostServiceImpl implements PostService {
         });
 
         post.getComments().forEach(comment -> {
-            String username = comment.getUsername();
-            User user = userRepos.findById(username)
+            String usernameForComment = comment.getUsername();
+            User userForComment = userRepos.findById(usernameForComment)
                     .orElse(null);
-            comment.setUser(user);
+            comment.setUser(userForComment);
 
             comment.setPost(post);
         });

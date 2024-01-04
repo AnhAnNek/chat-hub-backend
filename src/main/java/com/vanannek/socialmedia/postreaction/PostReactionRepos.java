@@ -16,6 +16,6 @@ public interface PostReactionRepos extends JpaRepository<PostReaction, Long> {
     boolean existsByUsernameAndPostIdAndIsDeletedFalse(@Param("username") String username,
                                                        @Param("postId") Long postId);
 
-    @Query("SELECT pr FROM PostReaction pr WHERE pr.post.id = :postId")
+    @Query("SELECT pr FROM PostReaction pr WHERE pr.post.id = :postId AND pr.isDeleted = false")
     List<PostReaction> getReactions(@PathParam("postId") Long postId);
 }

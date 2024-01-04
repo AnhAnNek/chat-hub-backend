@@ -1,6 +1,7 @@
 package com.vanannek.socialmedia.postreaction.service;
 
 import com.vanannek.socialmedia.EReactionType;
+import com.vanannek.socialmedia.ReactionUtils;
 import com.vanannek.socialmedia.UnsupportedReactionTypeException;
 import com.vanannek.socialmedia.post.*;
 import com.vanannek.socialmedia.postreaction.*;
@@ -44,20 +45,16 @@ public class PostReactionServiceImpl implements PostReactionService {
 
     @Override
     public PostReactionDTO updateReactionType(Long reactionId, String type) {
-        try {
-            EReactionType reactionType = EReactionType.valueOf(type.toUpperCase());
+        EReactionType reactionType = ReactionUtils.toEReactionType(type);
 
-            PostReaction postReaction = postReactionRepos.findById(reactionId)
-                    .orElseThrow(() -> new PostReactionNotFoundException("Could not find any post reaction with id=" + reactionId));
+        PostReaction postReaction = postReactionRepos.findById(reactionId)
+                .orElseThrow(() -> new PostReactionNotFoundException("Could not find any post reaction with id=" + reactionId));
 
-            postReaction.setType(reactionType);
-            postReaction.setDeleted(false);
+        postReaction.setType(reactionType);
+        postReaction.setDeleted(false);
 
-            PostReaction saved = postReactionRepos.save(postReaction);
-            return pMapper.toReactionDTO(saved);
-        } catch (IllegalArgumentException e) {
-            throw new UnsupportedReactionTypeException("Unsupported reaction type: " + type);
-        }
+        PostReaction saved = postReactionRepos.save(postReaction);
+        return pMapper.toReactionDTO(saved);
     }
 
     @Override

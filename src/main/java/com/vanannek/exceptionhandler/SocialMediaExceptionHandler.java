@@ -1,5 +1,8 @@
 package com.vanannek.exceptionhandler;
 
+import com.vanannek.socialmedia.comment.CommentNotFoundException;
+import com.vanannek.socialmedia.commentreaction.CommentReactionNotFoundException;
+import com.vanannek.socialmedia.commentreaction.DuplicateCommentReactionException;
 import com.vanannek.socialmedia.post.PostStatusNotFoundException;
 import com.vanannek.socialmedia.postreaction.DuplicatePostReactionException;
 import com.vanannek.socialmedia.post.PostNotFoundException;
@@ -19,6 +22,27 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class SocialMediaExceptionHandler {
 
     private static final Logger log = LogManager.getLogger(SocialMediaExceptionHandler.class);
+
+    @ExceptionHandler(CommentNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleCommentNotFound(CommentNotFoundException e) {
+        log.error("Comment not found", e);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(CommentReactionNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleCommentNotFound(CommentReactionNotFoundException e) {
+        log.error("Comment reaction not found", e);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateCommentReactionException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleDuplicatePostReaction(DuplicateCommentReactionException e) {
+        log.error("Duplicate comment reaction", e);
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
 
     @ExceptionHandler(PostNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
