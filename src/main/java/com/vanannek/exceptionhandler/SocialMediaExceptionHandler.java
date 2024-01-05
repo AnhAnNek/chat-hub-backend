@@ -3,9 +3,9 @@ package com.vanannek.exceptionhandler;
 import com.vanannek.socialmedia.comment.CommentNotFoundException;
 import com.vanannek.socialmedia.commentreaction.CommentReactionNotFoundException;
 import com.vanannek.socialmedia.commentreaction.DuplicateCommentReactionException;
+import com.vanannek.socialmedia.post.PostNotFoundException;
 import com.vanannek.socialmedia.post.PostStatusNotFoundException;
 import com.vanannek.socialmedia.postreaction.DuplicatePostReactionException;
-import com.vanannek.socialmedia.post.PostNotFoundException;
 import com.vanannek.socialmedia.postreaction.PostReactionNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,8 +14,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.time.LocalDateTime;
 
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -24,51 +25,58 @@ public class SocialMediaExceptionHandler {
     private static final Logger log = LogManager.getLogger(SocialMediaExceptionHandler.class);
 
     @ExceptionHandler(CommentNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handleCommentNotFound(CommentNotFoundException e) {
+    public ResponseEntity<ErrorResponse> handleCommentNotFound(CommentNotFoundException e) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), LocalDateTime.now());
         log.error("Comment not found", e);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(errorResponse);
     }
 
     @ExceptionHandler(CommentReactionNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handleCommentNotFound(CommentReactionNotFoundException e) {
+    public ResponseEntity<ErrorResponse> handleCommentNotFound(CommentReactionNotFoundException e) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), LocalDateTime.now());
         log.error("Comment reaction not found", e);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(errorResponse);
     }
 
     @ExceptionHandler(DuplicateCommentReactionException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleDuplicatePostReaction(DuplicateCommentReactionException e) {
+    public ResponseEntity<ErrorResponse> handleDuplicatePostReaction(DuplicateCommentReactionException e) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT, e.getMessage(), LocalDateTime.now());
         log.error("Duplicate comment reaction", e);
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(errorResponse);
     }
 
     @ExceptionHandler(PostNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handlePostNotFound(PostNotFoundException e) {
+    public ResponseEntity<ErrorResponse> handlePostNotFound(PostNotFoundException e) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), LocalDateTime.now());
         log.error("Post not found", e);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(errorResponse);
     }
 
     @ExceptionHandler(PostStatusNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handlePostNotFound(PostStatusNotFoundException e) {
+    public ResponseEntity<ErrorResponse> handlePostNotFound(PostStatusNotFoundException e) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), LocalDateTime.now());
         log.error("Post status not found", e);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(errorResponse);
     }
 
     @ExceptionHandler(DuplicatePostReactionException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleDuplicatePostReaction(DuplicatePostReactionException e) {
+    public ResponseEntity<ErrorResponse> handleDuplicatePostReaction(DuplicatePostReactionException e) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT, e.getMessage(), LocalDateTime.now());
         log.error("Duplicate post reaction", e);
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(errorResponse);
     }
 
     @ExceptionHandler(PostReactionNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handlePostReactionNotFound(PostReactionNotFoundException e) {
+    public ResponseEntity<ErrorResponse> handlePostReactionNotFound(PostReactionNotFoundException e) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), LocalDateTime.now());
         log.error("Post reaction not found", e);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(errorResponse);
     }
 }

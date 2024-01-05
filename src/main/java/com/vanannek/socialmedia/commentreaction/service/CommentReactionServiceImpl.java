@@ -73,6 +73,10 @@ public class CommentReactionServiceImpl implements CommentReactionService {
 
     @Override
     public List<CommentReactionDTO> getReactions(Long commentId) {
+        if (!commentRepos.existsById(commentId)) {
+            throw new CommentNotFoundException("Could not find any comment reaction with commentId=" + commentId);
+        }
+
         List<CommentReaction> reactions = commentReactionRepos.getReactions(commentId);
         return cMapper.toReactionDTOs(reactions);
     }

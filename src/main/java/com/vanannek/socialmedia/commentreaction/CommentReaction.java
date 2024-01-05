@@ -5,6 +5,7 @@ import com.vanannek.socialmedia.comment.Comment;
 import com.vanannek.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class CommentReaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -45,9 +45,9 @@ public class CommentReactionController {
     }
 
     @GetMapping("/get-reactions/{commentId}")
-    public List<CommentReactionDTO> getReactions(@PathVariable("commentId") Long commentId) {
+    public ResponseEntity<List<CommentReactionDTO>> getReactions(@PathVariable("commentId") Long commentId) {
         List<CommentReactionDTO> reactions = commentReactionService.getReactions(commentId);
         log.info(ReactionUtils.REACTIONS_RETRIEVED_SUCCESSFULLY);
-        return reactions;
+        return ResponseEntity.ok(reactions);
     }
 }
