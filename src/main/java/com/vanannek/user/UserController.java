@@ -2,7 +2,10 @@ package com.vanannek.user;
 
 import com.vanannek.user.service.UserService;
 import com.vanannek.websocket.OnlineUserStore;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,29 +17,36 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
+    private static final Logger log = LogManager.getLogger(UserController.class);
+
     @Autowired
     private UserService userService;
 
     @GetMapping("/get-all")
-    public List<UserDTO> getAll() {
+    public ResponseEntity<List<UserDTO>> getAll() {
         List<UserDTO> userDTOs =  userService.getAll();
-        return userDTOs;
+        log.info(UserUtils.RETRIEVED_ALL_USERS, userDTOs.size());
+        return ResponseEntity.ok(userDTOs);
     }
 
     @GetMapping("/get-all-without-cur-user")
-    public List<UserDTO> getUsersWithoutCurUser(@RequestParam("username") String username) {
+    public ResponseEntity<List<UserDTO>> getUsersWithoutCurUser(@RequestParam("username") String username) {
         List<UserDTO> userDTOs = userService.getUsersWithoutCurUser(username);
-        return userDTOs;
+        log.info(UserUtils.RETRIEVED_USERS_WITHOUT_CUR_USER, userDTOs.size());
+        return ResponseEntity.ok(userDTOs);
     }
 
     @GetMapping("/get-unchatted-users")
-    public List<UserDTO> showUnchattedUsers(@RequestParam("curUsername") String curUsername) {
+    public ResponseEntity<List<UserDTO>> showUnchattedUsers(@RequestParam("curUsername") String curUsername) {
         List<UserDTO> userDTOs = userService.getUnchattedUsers(curUsername);
-        return userDTOs;
+        log.info(UserUtils.RETRIEVED_UNCHATTED_USERS, userDTOs.size());
+        return ResponseEntity.ok(userDTOs);
     }
 
     @GetMapping("/get-online-users")
-    public List<String> getOnlineUsers() {
-        return OnlineUserStore.getIns().getOnlineUsers();
+    public ResponseEntity<List<String>> getOnlineUsers() {
+        List<String> onlineUsernames = OnlineUserStore.getIns().getOnlineUsers();
+        log.info(UserUtils.RETRIEVED_ONLINE_USERS, onlineUsernames.size());
+        return ResponseEntity.ok(onlineUsernames);
     }
 }

@@ -30,41 +30,30 @@ public class ConversationController {
     public ResponseEntity<List<ConversationDTO>> getConversationsByUsername(@RequestParam("username") String username) {
         List<ConversationDTO> conversations = conversationService.getConversationsByUsername(username);
         conversations.sort((obj1, obj2) -> obj2.getLastMessageDTO().getSendingTime().compareTo(obj1.getLastMessageDTO().getSendingTime()));
-        if (conversations.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(conversations, HttpStatus.OK);
+        log.info(ConversationUtils.RETRIEVED_CONVERSATIONS, username, conversations.size());
+        return ResponseEntity.ok(conversations);
     }
 
     @DeleteMapping("/delete-conversation")
     private ResponseEntity<String> deleteConversation(@RequestParam String conversationId) {
-        try {
-            conversationService.deleteById(conversationId);
-            return new ResponseEntity<>("Conversation deleted successfully", HttpStatus.OK);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        conversationService.deleteById(conversationId);
+        log.info(ConversationUtils.CONVERSATION_DELETED_SUCCESSFULLY);
+        return ResponseEntity.ok(ConversationUtils.CONVERSATION_DELETED_SUCCESSFULLY);
     }
 
     @PostMapping("/add-new-member")
     public ResponseEntity<String> addNewMember(@RequestBody ConversationMemberDTO memberDTO) {
-        try {
-            memberService.add(memberDTO);
-            return new ResponseEntity<>("Member added successfully", HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        memberService.add(memberDTO);
+        log.info(ConversationUtils.MEMBER_ADDED_SUCCESSFULLY);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ConversationUtils.MEMBER_ADDED_SUCCESSFULLY);
     }
 
     @DeleteMapping("/delete-member")
     public ResponseEntity<String> deleteMember(@RequestBody DeleteMemberRequest deleteMemberRequest) {
-        try {
-            memberService.deleteByUsername(deleteMemberRequest.conversationId(), deleteMemberRequest.memberUsername());
-            return new ResponseEntity<>("Member deleted successfully", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        memberService.deleteByUsername(deleteMemberRequest.conversationId(), deleteMemberRequest.memberUsername());
+        log.info(ConversationUtils.MEMBER_DELETED_SUCCESSFULLY);
+        return ResponseEntity.ok(ConversationUtils.MEMBER_DELETED_SUCCESSFULLY);
     }
 
     @PostMapping("/add-private-conversation")
@@ -97,7 +86,9 @@ public class ConversationController {
         conversationDTO.addMessageDTO(chatMessageDTO);
 
         conversationService.saveConversationWithMessagesAndMembers(conversationDTO);
-        return new ResponseEntity<>("A private conversation added successfully", HttpStatus.CREATED);
+        log.info(ConversationUtils.PRIVATE_CONVERSATION_ADDED_SUCCESSFULLY);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ConversationUtils.PRIVATE_CONVERSATION_ADDED_SUCCESSFULLY);
     }
 
     @PostMapping("/add-group")
@@ -132,7 +123,8 @@ public class ConversationController {
         conversationDTO.addMessageDTO(chatMessageDTO);
 
         conversationService.saveConversationWithMessagesAndMembers(conversationDTO);
-
-        return new ResponseEntity<>("A group added successfully", HttpStatus.CREATED);
+        log.info(ConversationUtils.GROUP_ADDED_SUCCESSFULLY);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ConversationUtils.GROUP_ADDED_SUCCESSFULLY);
     }
 }
