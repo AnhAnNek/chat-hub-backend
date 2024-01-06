@@ -1,15 +1,15 @@
 package com.vanannek.chat.conversation;
 
+import com.vanannek.chat.conversation.service.ConversationService;
 import com.vanannek.chat.member.ConversationMember;
 import com.vanannek.chat.member.ConversationMemberDTO;
 import com.vanannek.chat.member.DeleteMemberRequest;
-import com.vanannek.chat.message.ChatMessageDTO;
-import com.vanannek.chat.message.ChatMessage;
-import com.vanannek.chat.conversation.service.ConversationService;
 import com.vanannek.chat.member.service.ConversationMemberService;
+import com.vanannek.chat.message.ChatMessage;
+import com.vanannek.chat.message.ChatMessageDTO;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +19,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/conversations")
+@RequiredArgsConstructor
 public class ConversationController {
 
     private static final Logger log = LogManager.getLogger(ConversationController.class);
 
-    @Autowired private ConversationService conversationService;
-    @Autowired private ConversationMemberService memberService;
+    private final ConversationService conversationService;
+    private final ConversationMemberService memberService;
 
     @GetMapping("/get-conversations")
     public ResponseEntity<List<ConversationDTO>> getConversationsByUsername(@RequestParam("username") String username) {

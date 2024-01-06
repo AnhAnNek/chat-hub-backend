@@ -2,24 +2,26 @@ package com.vanannek.socialmedia.postreaction.service;
 
 import com.vanannek.socialmedia.EReactionType;
 import com.vanannek.socialmedia.ReactionUtils;
-import com.vanannek.socialmedia.UnsupportedReactionTypeException;
-import com.vanannek.socialmedia.post.*;
+import com.vanannek.socialmedia.post.Post;
+import com.vanannek.socialmedia.post.PostMapper;
+import com.vanannek.socialmedia.post.service.PostService;
 import com.vanannek.socialmedia.postreaction.*;
 import com.vanannek.user.User;
-import com.vanannek.user.UserNotFoundException;
-import com.vanannek.user.UserRepos;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.vanannek.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PostReactionServiceImpl implements PostReactionService {
 
-    @Autowired private PostReactionRepos postReactionRepos;
-    @Autowired private UserRepos userRepos;
-    @Autowired private PostRepos postRepos;
     private final PostMapper pMapper = PostMapper.INSTANCE;
+
+    private final PostReactionRepos postReactionRepos;
+    private final UserService userService;
+    private final PostService postService;
 
     @Override
     public PostReactionDTO add(PostReactionDTO postReactionDTO) {
@@ -31,12 +33,10 @@ public class PostReactionServiceImpl implements PostReactionService {
 
         PostReaction postReaction = pMapper.toReactionEntity(postReactionDTO);
 
-        User user = userRepos.findById(username)
-                .orElseThrow(() -> new UserNotFoundException("Could not find any user with username=" + username));
+        User user = userService.getUserByUsername(username);
         postReaction.setUser(user);
 
-        Post post = postRepos.findById(postId)
-                .orElseThrow(() -> new PostNotFoundException("Could not find any post with id=" + postId));
+        Post post = postService.getPostById(postId);
         postReaction.setPost(post);
 
         PostReaction saved = postReactionRepos.save(postReaction);
@@ -47,8 +47,7 @@ public class PostReactionServiceImpl implements PostReactionService {
     public PostReactionDTO updateReactionType(Long reactionId, String type) {
         EReactionType reactionType = ReactionUtils.toEReactionType(type);
 
-        PostReaction postReaction = postReactionRepos.findById(reactionId)
-                .orElseThrow(() -> new PostReactionNotFoundException("Could not find any post reaction with id=" + reactionId));
+        PostReaction postReaction = getReactionById(reactionId);
 
         postReaction.setType(reactionType);
         postReaction.setDeleted(false);
@@ -59,8 +58,7 @@ public class PostReactionServiceImpl implements PostReactionService {
 
     @Override
     public PostReactionDTO updateIsDeletedFlagById(Long reactionId, boolean isDeleted) {
-        PostReaction postReaction = postReactionRepos.findById(reactionId)
-                .orElseThrow(() -> new PostReactionNotFoundException("Could not find any post reaction with id=" + reactionId));
+        PostReaction postReaction = getReactionById(reactionId);
 
         postReaction.setDeleted(isDeleted);
 
@@ -70,7 +68,15 @@ public class PostReactionServiceImpl implements PostReactionService {
 
     @Override
     public List<PostReactionDTO> getReactions(Long postId) {
+        postService.getPostById(postId);
+
         List<PostReaction> reactions = postReactionRepos.getReactions(postId);
         return pMapper.toReactionDTOs(reactions);
+    }
+
+    @Override
+    public PostReaction getReactionById(Long reactionId) {
+        return postReactionRepos.findById(reactionId)
+                .orElseThrow(() -> new PostReactionNotFoundException("Could not find any post reaction with id=" + reactionId));
     }
 }

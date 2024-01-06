@@ -2,39 +2,34 @@ package com.vanannek.socialmedia.comment.service;
 
 import com.vanannek.socialmedia.comment.*;
 import com.vanannek.socialmedia.post.Post;
-import com.vanannek.socialmedia.post.PostNotFoundException;
-import com.vanannek.socialmedia.post.PostRepos;
+import com.vanannek.socialmedia.post.service.PostService;
 import com.vanannek.user.User;
-import com.vanannek.user.UserNotFoundException;
-import com.vanannek.user.UserRepos;
+import com.vanannek.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
-    private final CommentRepos commentRepos;
-    private final PostRepos postRepos;
-    private final UserRepos userRepos;
-
     private final CommentMapper cMapper = CommentMapper.INSTANCE;
+
+    private final CommentRepos commentRepos;
+    private final PostService postService;
+    private final UserService userService;
 
     @Override
     public CommentDTO save(CommentDTO commentDTO) {
         Comment comment = cMapper.toEntity(commentDTO);
 
         Long postId = commentDTO.getPostId();
-        Post post = postRepos.findById(postId)
-                .orElseThrow(() -> new PostNotFoundException("Could not find any post with id=" + postId));
+        Post post = postService.getPostById(postId);
         comment.setPost(post);
 
         String username = commentDTO.getUsername();
-        User user = userRepos.findById(username)
-                .orElseThrow(() -> new UserNotFoundException("Could not find any user with username=" + username));
+        User user = userService.getUserByUsername(username);
         comment.setUser(user);
 
         Comment saved = commentRepos.save(comment);
@@ -44,8 +39,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDTO update(CommentDTO commentDTO) {
         Long commentId = commentDTO.getId();
-        Comment comment = commentRepos.findById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException("Could not find any comment with id=" + commentId));
+        Comment comment = getById(commentId);
 
         comment.setContent( commentDTO.getContent() );
         comment.setUpdatedAt( commentDTO.getUpdatedAt() );
@@ -56,9 +50,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO updateIsDeletedFlagById(Long commentId, boolean isDeleted) {
-        Comment comment = commentRepos.findById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException("Could not find any comment with id=" + commentId));
-
+        Comment comment = getById(commentId);
         comment.setDeleted(isDeleted);
 
         Comment saved = commentRepos.save(comment);
@@ -67,7 +59,15 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentDTO> getComments(Long postId) {
+        postService.getPostById(postId);
+
         List<Comment> comments = commentRepos.getComments(postId);
         return cMapper.toDTOs(comments);
+    }
+
+    @Override
+    public Comment getById(Long commentId) {
+        return commentRepos.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException("Could not find any comment with id=" + commentId));
     }
 }

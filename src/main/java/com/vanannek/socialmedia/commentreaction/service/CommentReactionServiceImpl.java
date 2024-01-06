@@ -4,12 +4,10 @@ import com.vanannek.socialmedia.EReactionType;
 import com.vanannek.socialmedia.ReactionUtils;
 import com.vanannek.socialmedia.comment.Comment;
 import com.vanannek.socialmedia.comment.CommentMapper;
-import com.vanannek.socialmedia.comment.CommentNotFoundException;
-import com.vanannek.socialmedia.comment.CommentRepos;
+import com.vanannek.socialmedia.comment.service.CommentService;
 import com.vanannek.socialmedia.commentreaction.*;
 import com.vanannek.user.User;
-import com.vanannek.user.UserNotFoundException;
-import com.vanannek.user.UserRepos;
+import com.vanannek.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +17,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentReactionServiceImpl implements CommentReactionService {
 
-    private final CommentReactionRepos commentReactionRepos;
-    private final UserRepos userRepos;
-    private final CommentRepos commentRepos;
     private final CommentMapper cMapper = CommentMapper.INSTANCE;
-    
+
+    private final CommentReactionRepos commentReactionRepos;
+    private final UserService userService;
+    private final CommentService commentService;
+
     @Override
     public CommentReactionDTO add(CommentReactionDTO commentReactionDTO) {
         String username = commentReactionDTO.getUsername();
@@ -34,12 +33,10 @@ public class CommentReactionServiceImpl implements CommentReactionService {
 
         CommentReaction commentReaction = cMapper.toReactionEntity(commentReactionDTO);
 
-        User user = userRepos.findById(username)
-                .orElseThrow(() -> new UserNotFoundException("Could not find any user with username=" + username));
+        User user = userService.getUserByUsername(username);
         commentReaction.setUser(user);
 
-        Comment comment = commentRepos.findById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException("Could not find any comment with id=" + commentId));
+        Comment comment = commentService.getById(commentId);
         commentReaction.setComment(comment);
 
         CommentReaction saved = commentReactionRepos.save(commentReaction);
@@ -50,8 +47,7 @@ public class CommentReactionServiceImpl implements CommentReactionService {
     public CommentReactionDTO updateReactionType(Long reactionId, String type) {
         EReactionType reactionType = ReactionUtils.toEReactionType(type);
 
-        CommentReaction commentReaction = commentReactionRepos.findById(reactionId)
-                .orElseThrow(() -> new CommentReactionNotFoundException("Could not find any comment reaction with id=" + reactionId));
+        CommentReaction commentReaction = getReactionById(reactionId);
 
         commentReaction.setType(reactionType);
         commentReaction.setDeleted(false);
@@ -62,8 +58,7 @@ public class CommentReactionServiceImpl implements CommentReactionService {
 
     @Override
     public CommentReactionDTO updateIsDeletedFlagById(Long reactionId, boolean isDeleted) {
-        CommentReaction commentReaction = commentReactionRepos.findById(reactionId)
-                .orElseThrow(() -> new CommentReactionNotFoundException("Could not find any comment reaction with id=" + reactionId));
+        CommentReaction commentReaction = getReactionById(reactionId);
 
         commentReaction.setDeleted(isDeleted);
 
@@ -71,11 +66,14 @@ public class CommentReactionServiceImpl implements CommentReactionService {
         return cMapper.toReactionDTO(saved);
     }
 
+    private CommentReaction getReactionById(Long reactionId) {
+        return commentReactionRepos.findById(reactionId)
+                .orElseThrow(() -> new CommentReactionNotFoundException("Could not find any comment reaction with id=" + reactionId));
+    }
+
     @Override
     public List<CommentReactionDTO> getReactions(Long commentId) {
-        if (!commentRepos.existsById(commentId)) {
-            throw new CommentNotFoundException("Could not find any comment reaction with commentId=" + commentId);
-        }
+        commentService.getById(commentId);
 
         List<CommentReaction> reactions = commentReactionRepos.getReactions(commentId);
         return cMapper.toReactionDTOs(reactions);

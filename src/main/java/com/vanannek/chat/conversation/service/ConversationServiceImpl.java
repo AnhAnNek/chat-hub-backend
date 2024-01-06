@@ -1,19 +1,10 @@
 package com.vanannek.chat.conversation.service;
 
-import com.vanannek.chat.conversation.ConversationDTO;
-import com.vanannek.chat.conversation.Conversation;
-import com.vanannek.user.User;
-import com.vanannek.chat.conversation.ConversationNotFoundException;
-import com.vanannek.chat.conversation.ConversationMapper;
-import com.vanannek.chat.member.ConversationMemberMapper;
-import com.vanannek.chat.message.MessageMapper;
-import com.vanannek.chat.message.ChatMessageRepos;
+import com.vanannek.chat.conversation.*;
 import com.vanannek.chat.member.ConversationMemberRepos;
-import com.vanannek.chat.conversation.ConversationRepos;
-import com.vanannek.user.UserRepos;
-import com.vanannek.chat.conversation.ConversationUtils;
+import com.vanannek.user.User;
+import com.vanannek.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,10 +13,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ConversationServiceImpl implements ConversationService {
 
+    private final ConversationMapper conversationMapper = ConversationMapper.INSTANCE;
+
     private final ConversationRepos conversationRepos;
     private final ConversationMemberRepos memberRepos;
-    private final UserRepos userRepos;
-    private final ConversationMapper conversationMapper = ConversationMapper.INSTANCE;
+    private final UserService userService;
 
     @Override
     public ConversationDTO save(ConversationDTO conversationDTO) {
@@ -45,8 +37,7 @@ public class ConversationServiceImpl implements ConversationService {
 
             String senderUsername = chatMessage.getSenderUsername();
 
-            User sender = userRepos.findById(senderUsername)
-                            .orElse(null);
+            User sender = userService.getUserByUsername(senderUsername);
             chatMessage.setSender(sender);
             chatMessage.setConversation(conversation);
         });
@@ -57,8 +48,7 @@ public class ConversationServiceImpl implements ConversationService {
             }
 
             String memberUsername = conversationMember.getMemberUsername();
-            User member = userRepos.findById(memberUsername)
-                    .orElse(null);
+            User member = userService.getUserByUsername(memberUsername);
             conversationMember.setMember(member);
             conversationMember.setConversation(conversation);
         });
@@ -79,13 +69,14 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     public ConversationDTO getById(String conversationId) {
-        Conversation conversation = conversationRepos.findById(conversationId)
-                .orElseThrow(() -> new ConversationNotFoundException("Could not find any conversation"));
+        Conversation conversation = getConversationById(conversationId);
         return conversationMapper.toDTO(conversation);
     }
 
     @Override
     public List<ConversationDTO> getConversationsByUsername(String username) {
+        userService.getUserByUsername(username);
+
         List<String> conversationIds = memberRepos.getConversationIdsByUsername(username);
         List<Conversation> conversations = conversationRepos.findAllById(conversationIds);
         conversations.forEach(c -> setNameForPrivateConversation(username, c));
@@ -99,5 +90,11 @@ public class ConversationServiceImpl implements ConversationService {
         String name = conversation.getName();
         String recipientUsername = ConversationUtils.getRemainderUser(name, curUsername);
         conversation.setName(recipientUsername);
+    }
+
+    @Override
+    public Conversation getConversationById(String conversationId) {
+        return conversationRepos.findById(conversationId)
+                .orElseThrow(() -> new ConversationNotFoundException("Could not find any conversation"));
     }
 }

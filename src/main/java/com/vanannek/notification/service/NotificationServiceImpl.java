@@ -1,24 +1,21 @@
 package com.vanannek.notification.service;
 
-import com.vanannek.notification.NotificationDTO;
-import com.vanannek.notification.Notification;
+import com.vanannek.notification.*;
 import com.vanannek.user.User;
-import com.vanannek.notification.NotificationNotFoundException;
-import com.vanannek.user.UserNotFoundException;
-import com.vanannek.notification.NotificationMapper;
-import com.vanannek.notification.NotificationRepos;
-import com.vanannek.user.UserRepos;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.vanannek.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
-    @Autowired private NotificationRepos notificationRepos;
-    @Autowired private UserRepos userRepos;
     private final NotificationMapper nMapper = NotificationMapper.INSTANCE;
+
+    private final NotificationRepos notificationRepos;
+    private final UserService userService;
 
     @Override
     public NotificationDTO add(NotificationDTO notificationDTO) {
@@ -26,8 +23,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         String username = notificationDTO.getUsername() != null
                 ? notificationDTO.getUsername() : "";
-        User user = userRepos.findById(username)
-                        .orElseThrow(() -> new UserNotFoundException("Could not find any user with username=" + username));
+        User user = userService.getUserByUsername(username);
         notification.setUser(user);
 
         Notification saved = notificationRepos.save(notification);
@@ -36,9 +32,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void markNotificationAsRead(Long notificationId) {
-        Notification notification = notificationRepos
-                .findById(notificationId)
-                .orElseThrow(() -> new NotificationNotFoundException("Could not find any notifications with id=" + notificationId));
+        Notification notification = getNotificationById(notificationId);
         notification.setRead(true);
 
         notificationRepos.save(notification);
@@ -46,6 +40,8 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<NotificationDTO> getNotifications(String username) {
+        userService.getUserByUsername(username);
+
         List<Notification> notifications = notificationRepos.getNotifications(username);
         return nMapper.toDTOs(notifications);
     }
@@ -53,5 +49,12 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void deleteAll() {
         notificationRepos.deleteAll();
+    }
+
+    @Override
+    public Notification getNotificationById(Long notificationId) {
+        String errorMsg = String.format("Could not find any notifications with id=%s", notificationId);
+        return notificationRepos.findById(notificationId)
+                .orElseThrow(() -> new NotificationNotFoundException(errorMsg));
     }
 }

@@ -4,7 +4,7 @@ import com.vanannek.socialmedia.comment.CommentNotFoundException;
 import com.vanannek.socialmedia.commentreaction.CommentReactionNotFoundException;
 import com.vanannek.socialmedia.commentreaction.DuplicateCommentReactionException;
 import com.vanannek.socialmedia.post.PostNotFoundException;
-import com.vanannek.socialmedia.post.PostStatusNotFoundException;
+import com.vanannek.socialmedia.post.UpsupportedPostStatusException;
 import com.vanannek.socialmedia.postreaction.DuplicatePostReactionException;
 import com.vanannek.socialmedia.postreaction.PostReactionNotFoundException;
 import org.apache.logging.log4j.LogManager;
@@ -56,10 +56,10 @@ public class SocialMediaExceptionHandler {
                 .body(errorResponse);
     }
 
-    @ExceptionHandler(PostStatusNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handlePostNotFound(PostStatusNotFoundException e) {
+    @ExceptionHandler(UpsupportedPostStatusException.class)
+    public ResponseEntity<ErrorResponse> handlePostNotFound(UpsupportedPostStatusException e) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), LocalDateTime.now());
-        log.error("Post status not found", e);
+        log.error("Unsupported post status", e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(errorResponse);
     }

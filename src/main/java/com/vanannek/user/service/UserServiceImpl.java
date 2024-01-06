@@ -15,8 +15,9 @@ import java.util.List;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    @Autowired private UserRepos userRepos;
     private final UserMapper userMapper = UserMapper.INSTANCE;
+
+    @Autowired private UserRepos userRepos;
 
     @Override
     public UserDTO save(UserDTO userDTO) {
@@ -26,10 +27,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO getUserByUsername(String username) {
-        User user = userRepos.findById(username)
+    public User getUserByUsername(String username) {
+        return userRepos.findById(username)
                 .orElseThrow(() -> new UserNotFoundException("Could not find any users with username:" + username));
-        return userMapper.toDTO(user);
     }
 
     @Override
