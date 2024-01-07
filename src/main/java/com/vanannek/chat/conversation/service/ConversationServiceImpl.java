@@ -97,4 +97,9 @@ public class ConversationServiceImpl implements ConversationService {
         return conversationRepos.findById(conversationId)
                 .orElseThrow(() -> new ConversationNotFoundException("Could not find any conversation"));
     }
+
+    @Override
+    public boolean existsPrivateConversation(String firstUser, String secondUser) {
+        return conversationRepos.existsPrivateConversation(firstUser, secondUser);
+    }
 }

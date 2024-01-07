@@ -13,4 +13,5 @@ public interface ConversationService {
     ConversationDTO getById(String conversationId);
     List<ConversationDTO> getConversationsByUsername(String username);
     Conversation getConversationById(String conversationId);
+    boolean existsPrivateConversation(String firstUser, String secondUser);
 }

@@ -1,6 +1,7 @@
 package com.vanannek.exceptionhandler;
 
 import com.vanannek.chat.conversation.ConversationNotFoundException;
+import com.vanannek.chat.conversation.DuplicatePrivateConversationException;
 import com.vanannek.chat.member.ConversationMemberNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +25,14 @@ public class ChatExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), LocalDateTime.now());
         log.error("Conversation not found", e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(errorResponse);
+    }
+
+    @ExceptionHandler(DuplicatePrivateConversationException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateConversation(DuplicatePrivateConversationException e) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT, e.getMessage(), LocalDateTime.now());
+        log.error("Duplicate private conversation", e);
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(errorResponse);
     }
 

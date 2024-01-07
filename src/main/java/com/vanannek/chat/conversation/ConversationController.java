@@ -86,6 +86,10 @@ public class ConversationController {
 
         conversationDTO.addMessageDTO(chatMessageDTO);
 
+        if (conversationService.existsPrivateConversation(curUsername, targetUsername)) {
+            throw new DuplicatePrivateConversationException("A private conversation already between the users");
+        }
+
         conversationService.saveConversationWithMessagesAndMembers(conversationDTO);
         log.info(ConversationUtils.PRIVATE_CONVERSATION_ADDED_SUCCESSFULLY);
         return ResponseEntity.status(HttpStatus.CREATED)
