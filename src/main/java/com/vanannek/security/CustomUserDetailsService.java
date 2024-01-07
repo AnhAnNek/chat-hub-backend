@@ -1,8 +1,7 @@
 package com.vanannek.security;
 
-import com.vanannek.entity.User;
-import com.vanannek.exception.UserNotFoundException;
-import com.vanannek.repos.UserRepos;
+import com.vanannek.user.User;
+import com.vanannek.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,15 +17,13 @@ import java.util.stream.Collectors;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired private UserRepos userRepos;
+    @Autowired private UserService userService;
 
     private static final List<String> defaultRoles = List.of("USER");
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepos
-                .findById(username)
-                .orElseThrow(() -> new UserNotFoundException("Username not found"));
+        User user = userService.getUserByUsername(username);
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassHash(), mapRolesToAuthorities(defaultRoles));
     }
 
