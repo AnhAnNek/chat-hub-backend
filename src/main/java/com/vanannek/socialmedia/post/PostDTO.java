@@ -25,7 +25,7 @@ public class PostDTO {
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private String status;
+    private Post.EStatus status;
     private String username;
 
     private List<PostReactionDTO> reactions;

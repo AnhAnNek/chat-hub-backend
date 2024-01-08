@@ -40,7 +40,7 @@ class CommentReactionControllerTest {
 
     @Test
     public void testAddReactionSuccessfully() throws Exception {
-        CommentReactionDTO commentReactionDTO = new CommentReactionDTO("vanlong", EReactionType.LIKE.name());
+        CommentReactionDTO commentReactionDTO = new CommentReactionDTO("vanlong", EReactionType.LIKE);
 
         when(commentReactionService.add(any(CommentReactionDTO.class))).thenReturn(commentReactionDTO);
 

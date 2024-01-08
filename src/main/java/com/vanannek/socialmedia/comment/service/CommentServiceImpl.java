@@ -37,12 +37,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDTO update(CommentDTO commentDTO) {
-        Long commentId = commentDTO.getId();
+    public CommentDTO update(UpdateCommentRequest updateRequest) {
+        Long commentId = updateRequest.id();
         Comment comment = getById(commentId);
 
-        comment.setContent( commentDTO.getContent() );
-        comment.setUpdatedAt( commentDTO.getUpdatedAt() );
+        comment.setContent( updateRequest.content() );
+        comment.setUpdatedAt( updateRequest.updatedAt() );
 
         Comment saved = commentRepos.save(comment);
         return cMapper.toDTO(saved);
