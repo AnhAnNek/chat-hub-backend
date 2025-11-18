@@ -3,6 +3,9 @@ package com.vanannek.authentication;
 import com.vanannek.user.UserDTO;
 import com.vanannek.security.JwtGenerator;
 import com.vanannek.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,6 +28,7 @@ import static com.vanannek.security.SecurityConstants.DEFAULT_TOKEN_TYPE;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "Auth")
 public class AuthController {
 
     private static final Logger log = LogManager.getLogger(AuthController.class);
@@ -34,6 +38,17 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtGenerator jwtGenerator;
 
+    @Operation(
+            summary = "Login",
+            description = "Authentication with your username and password to obtain a secure access token. " +
+                    "This token is required for accessing protected resources.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    )
+            }
+    )
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
         try {
@@ -55,6 +70,16 @@ public class AuthController {
         }
     }
 
+    @Operation(
+            summary = "Register",
+            description = "Register a new user.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    )
+            }
+    )
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
         if (userService.exists(registerRequest.username())) {

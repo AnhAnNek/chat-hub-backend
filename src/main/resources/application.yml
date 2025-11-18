@@ -1,6 +1,9 @@
 server:
     port: 8000
 
+    prod:
+        url: ${PROD_BASE_URL}
+
 spring:
     application:
         name: chat-hub-app

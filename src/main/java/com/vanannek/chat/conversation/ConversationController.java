@@ -7,6 +7,9 @@ import com.vanannek.chat.member.DeleteMemberRequest;
 import com.vanannek.chat.member.service.ConversationMemberService;
 import com.vanannek.chat.message.ChatMessage;
 import com.vanannek.chat.message.ChatMessageDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/conversations")
 @RequiredArgsConstructor
+@Tag(name = "Conversation")
 public class ConversationController {
 
     private static final Logger log = LogManager.getLogger(ConversationController.class);
@@ -27,6 +31,20 @@ public class ConversationController {
     private final ConversationService conversationService;
     private final ConversationMemberService memberService;
 
+    @Operation(
+            summary = "Retrieve conversations by username",
+            description = "Retrieve conversations by providing the username.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "Unauthorized / Invalid Token",
+                            responseCode = "401"
+                    )
+            }
+    )
     @GetMapping("/get-conversations")
     public ResponseEntity<List<ConversationDTO>> getConversationsByUsername(@RequestParam("username") String username) {
         List<ConversationDTO> conversations = conversationService.getConversationsByUsername(username);
@@ -35,6 +53,20 @@ public class ConversationController {
         return ResponseEntity.ok(conversations);
     }
 
+    @Operation(
+            summary = "Delete conversation",
+            description = "Delete a conversation by providing the conversation id.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "Unauthorized / Invalid Token",
+                            responseCode = "401"
+                    )
+            }
+    )
     @DeleteMapping("/delete-conversation")
     private ResponseEntity<String> deleteConversation(@RequestParam String conversationId) {
         conversationService.deleteById(conversationId);
@@ -42,6 +74,20 @@ public class ConversationController {
         return ResponseEntity.ok(ConversationUtils.CONVERSATION_DELETED_SUCCESSFULLY);
     }
 
+    @Operation(
+            summary = "Add new member to conversation",
+            description = "Add a new member to a conversation by providing the member details.",
+            responses = {
+                    @ApiResponse(
+                            description = "Created",
+                            responseCode = "201"
+                    ),
+                    @ApiResponse(
+                            description = "Unauthorized / Invalid Token",
+                            responseCode = "401"
+                    )
+            }
+    )
     @PostMapping("/add-new-member")
     public ResponseEntity<String> addNewMember(@RequestBody ConversationMemberDTO memberDTO) {
         memberService.add(memberDTO);
@@ -50,6 +96,20 @@ public class ConversationController {
                 .body(ConversationUtils.MEMBER_ADDED_SUCCESSFULLY);
     }
 
+    @Operation(
+            summary = "Delete a member from a conversation",
+            description = "Delete a member from a conversation by providing the member details.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "Unauthorized / Invalid Token",
+                            responseCode = "401"
+                    )
+            }
+    )
     @DeleteMapping("/delete-member")
     public ResponseEntity<String> deleteMember(@RequestBody DeleteMemberRequest deleteMemberRequest) {
         memberService.deleteByUsername(deleteMemberRequest.conversationId(), deleteMemberRequest.memberUsername());
@@ -57,6 +117,20 @@ public class ConversationController {
         return ResponseEntity.ok(ConversationUtils.MEMBER_DELETED_SUCCESSFULLY);
     }
 
+    @Operation(
+            summary = "Add a private conversation",
+            description = "Add a private conversation by providing the two usernames.",
+            responses = {
+                    @ApiResponse(
+                            description = "Created",
+                            responseCode = "201"
+                    ),
+                    @ApiResponse(
+                            description = "Unauthorized / Invalid Token",
+                            responseCode = "401"
+                    )
+            }
+    )
     @PostMapping("/add-private-conversation")
     public ResponseEntity<String> addPrivateConversation(
             @RequestParam("curUsername") String curUsername,
@@ -96,6 +170,20 @@ public class ConversationController {
                 .body(ConversationUtils.PRIVATE_CONVERSATION_ADDED_SUCCESSFULLY);
     }
 
+    @Operation(
+            summary = "Add a group",
+            description = "Add a group by providing the group details.",
+            responses = {
+                    @ApiResponse(
+                            description = "Created",
+                            responseCode = "201"
+                    ),
+                    @ApiResponse(
+                            description = "Unauthorized / Invalid Token",
+                            responseCode = "401"
+                    )
+            }
+    )
     @PostMapping("/add-group")
     public ResponseEntity<String> addGroup(@RequestBody AddGroupRequest addGroupRequest) {
         String curUsername = addGroupRequest.curUsername();

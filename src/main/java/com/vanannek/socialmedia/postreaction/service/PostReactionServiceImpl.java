@@ -2,6 +2,7 @@ package com.vanannek.socialmedia.postreaction.service;
 
 import com.vanannek.socialmedia.EReactionType;
 import com.vanannek.socialmedia.ReactionUtils;
+import com.vanannek.socialmedia.UpdateReactionRequest;
 import com.vanannek.socialmedia.post.Post;
 import com.vanannek.socialmedia.post.PostMapper;
 import com.vanannek.socialmedia.post.service.PostService;
@@ -44,12 +45,10 @@ public class PostReactionServiceImpl implements PostReactionService {
     }
 
     @Override
-    public PostReactionDTO updateReactionType(Long reactionId, String type) {
-        EReactionType reactionType = ReactionUtils.toEReactionType(type);
+    public PostReactionDTO updateReactionType(UpdateReactionRequest updateRequest) {
+        PostReaction postReaction = getReactionById( updateRequest.id() );
 
-        PostReaction postReaction = getReactionById(reactionId);
-
-        postReaction.setType(reactionType);
+        postReaction.setType( updateRequest.type() );
         postReaction.setDeleted(false);
 
         PostReaction saved = postReactionRepos.save(postReaction);

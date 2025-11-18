@@ -2,6 +2,7 @@ package com.vanannek.socialmedia.commentreaction.service;
 
 import com.vanannek.socialmedia.EReactionType;
 import com.vanannek.socialmedia.ReactionUtils;
+import com.vanannek.socialmedia.UpdateReactionRequest;
 import com.vanannek.socialmedia.comment.Comment;
 import com.vanannek.socialmedia.comment.CommentMapper;
 import com.vanannek.socialmedia.comment.service.CommentService;
@@ -44,12 +45,10 @@ public class CommentReactionServiceImpl implements CommentReactionService {
     }
 
     @Override
-    public CommentReactionDTO updateReactionType(Long reactionId, String type) {
-        EReactionType reactionType = ReactionUtils.toEReactionType(type);
+    public CommentReactionDTO updateReactionType(UpdateReactionRequest updateRequest) {
+        CommentReaction commentReaction = getReactionById( updateRequest.id() );
 
-        CommentReaction commentReaction = getReactionById(reactionId);
-
-        commentReaction.setType(reactionType);
+        commentReaction.setType( updateRequest.type() );
         commentReaction.setDeleted(false);
 
         CommentReaction saved = commentReactionRepos.save(commentReaction);

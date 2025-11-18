@@ -365,7 +365,7 @@ public class InitializingData implements CommandLineRunner {
 
         for (UserDTO userForPost : userDTOs) {
             String usernameForPost = userForPost.getUsername();
-            postReactionDTOs.add( new PostReactionDTO(usernameForPost, EReactionType.LIKE.name()) );
+            postReactionDTOs.add( new PostReactionDTO(usernameForPost, EReactionType.LIKE) );
 
             CommentDTO commentDTO = CommentDTO.builder()
                     .content(usernameForPost + " hihihi!")
@@ -380,7 +380,7 @@ public class InitializingData implements CommandLineRunner {
                 .content("Post content")
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
-                .status(Post.EStatus.ACTIVE.toString())
+                .status(Post.EStatus.ACTIVE)
                 .username(ownerUsername)
                 .build();
         postDTO.addReactions(postReactionDTOs);

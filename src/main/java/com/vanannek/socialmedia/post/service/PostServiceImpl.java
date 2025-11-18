@@ -64,16 +64,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDTO update(PostDTO postDTO) {
-        String statusStr = postDTO.getStatus();
-        Post.EStatus status = PostUtils.toEPostStatus(statusStr);
+    public PostDTO update(UpdatePostRequest updateRequest) {
+        Post post = getPostById( updateRequest.id() );
 
-        Long postId = postDTO.getId();
-        Post post = getPostById(postId);
-
-        post.setContent( postDTO.getContent() );
-        post.setUpdatedAt( postDTO.getUpdatedAt() );
-        post.setStatus( status );
+        post.setContent( updateRequest.content() );
+        post.setUpdatedAt( updateRequest.updatedAt() );
+        post.setStatus( updateRequest.status() );
 
         Post saved = postRepos.save(post);
         return pMapper.toDTO(saved);
