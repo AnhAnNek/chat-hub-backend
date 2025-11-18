@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+    chat-hub-postgres-db:
+        image: postgres:latest
+        container_name: chat-hub-postgres-db
+        environment:
+            POSTGRES_USER: root
+            POSTGRES_PASSWORD: root
+            POSTGRES_DB: chat-hub-db
+        ports:
+            - "5432:5432"
+        volumes:
+            - chat-hub-data:/var/lib/postgresql
+
+volumes:
+    chat-hub-data:
